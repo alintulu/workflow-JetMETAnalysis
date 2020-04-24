@@ -11,14 +11,14 @@ stages:
        method: zip
        parameters: [input_file]
     step: {$ref: 'steps.yaml#/ntuple'}
-  - name: ntuple_noPU
-  dependencies: [init]
-  scheduler:
-    scheduler_type: multistep-stage
-    parameters:
-      input_file: {step: init, output: noPU_files}
-      output_file: '{workdir}/JRA_noPU.root'
-    scatter:
-       method: zip
-       parameters: [input_file]
-    step: {$ref: 'steps.yaml#/ntuple'}
+#  - name: ntuple_noPU
+#  dependencies: [init]
+#  scheduler:
+#    scheduler_type: multistep-stage
+#    parameters:
+#      input_file: {step: init, output: noPU_files}
+#      output_file: '{workdir}/JRA_noPU.root'
+#    scatter:
+#       method: zip
+#       parameters: [input_file]
+#    step: {$ref: 'steps.yaml#/ntuple'}
