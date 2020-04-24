@@ -1,0 +1,13 @@
+ntuple:
+  process:
+    process_type: 'interpolated-script-cmd'
+    script: |
+      cmsRun [TODO] {input_file} {global_tag} {output_file}
+  environment:
+    environment_type: 'docker-encapsulated'
+    image: [TODO]
+    imagetag: master
+  publisher:
+    publisher_type: interpolated-pub
+    publish:
+      ntuple_file: '{output_file}'

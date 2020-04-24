@@ -1,0 +1,24 @@
+stages:
+  - name: ntuple_PU
+  dependencies: [init]
+  scheduler:
+    scheduler_type: multistep-stage
+    parameters:
+      input_file: {step: init, output: PU_files}
+      output_file: '{workdir}/JRA_PU.root'
+      global_tag: {step: init, output: GT}
+    scatter:
+       method: zip
+       parameters: [input_file]
+    step: {$ref: 'steps.yaml#/ntuple'}
+  - name: ntuple_noPU
+  dependencies: [init]
+  scheduler:
+    scheduler_type: multistep-stage
+    parameters:
+      input_file: {step: init, output: noPU_files}
+      output_file: '{workdir}/JRA_noPU.root'
+    scatter:
+       method: zip
+       parameters: [input_file]
+    step: {$ref: 'steps.yaml#/ntuple'}
