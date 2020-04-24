@@ -6,19 +6,22 @@ stages:
       parameters:
         input_file: {step: init, output: PU_files}
         output_file: '{workdir}/JRA_PU.root'
-        global_tag: {step: init, output: GT}
+        global_tag: 'best_gt_in_the_world' #{step: init, output: GT}
+      batchsize: 5
       scatter:
         method: zip
         parameters: [input_file]
       step: {$ref: 'steps.yaml#/ntuple'}
-#  - name: ntuple_noPU
-#  dependencies: [init]
-#  scheduler:
-#    scheduler_type: multistep-stage
-#    parameters:
-#      input_file: {step: init, output: noPU_files}
-#      output_file: '{workdir}/JRA_noPU.root'
-#    scatter:
-#       method: zip
-#       parameters: [input_file]
-#    step: {$ref: 'steps.yaml#/ntuple'}
+  - name: ntuple_noPU
+    dependencies: [init]
+    scheduler:
+      scheduler_type: multistep-stage
+      parameters:
+        input_file: {step: init, output: noPU_files}
+        output_file: '{workdir}/JRA_noPU.root'
+        global_tag: 'best_gt_in_the_world' #{step: init, output: GT}
+      batchsize: 5
+      scatter:
+         method: zip
+         parameters: [input_file]
+      step: {$ref: 'steps.yaml#/ntuple'}
