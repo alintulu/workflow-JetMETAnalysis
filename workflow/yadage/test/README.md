@@ -14,15 +14,27 @@ To see what I mean:
 
 [Start the workflow]
 
-[Start subworkflow...Creating N jobs, each job performing]
+* input: text file containing N names of root files 
+
+[Start subworkflow...creating N jobs, all jobs running parallel, each job performing]
 
 1. Run creation of PU ntuples and noPU ntuples independently of eachother
+ * input: one name of root file, taken from `input_less.yaml`
+ * output: one ntuple root file
 2. Runs list_lumi for PU when previous step for PU is done, same for noPU
+ * input: one ntuple root file created in previous step
+ * output: one text file containing information of every lumisection in the ntuple
 
-[End subworkflow...When all M jobs are done for step two]
+[End subworkflow...when all N jobs are done for step two]
+
+* output: N ntuple root files
+* output: N text files containing information of every lumisection in the ntuple sample
 
 3. Gather the output from both PU and noPU step two of the subworkflow
 4. Run match_files on the output
+ * input: N text files containing information of every lumisection in the ntuple sample
+ * output: one text file with every lumisection and which PU and noPU
+ntuple root file it can be found in
 
 ### Structure
 
