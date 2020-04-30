@@ -19,7 +19,7 @@ To see what I mean:
 [Start subworkflow...creating N jobs, all jobs running parallel, each job performing]
 
 1. Run creation of PU ntuples and noPU ntuples independently of eachother
- * input: one name of root file, taken from `input_less.yaml`
+ * input: one name of root file
  * output: one ntuple root file
 2. Runs list_lumi for PU when previous step for PU is done, same for noPU
  * input: one ntuple root file created in previous step
