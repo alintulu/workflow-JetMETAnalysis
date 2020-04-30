@@ -1,0 +1,43 @@
+ntuple:
+  process:
+    process_type: 'interpolated-script-cmd'
+    script: |
+      cmsRun JetMETAnalysis/JetAnalyzers/test/run_JRA_cfg.py +i {input_file} +o {output_file}
+  environment:
+    environment_type: 'docker-encapsulated'
+    image: alintulu/cmssw-slc6
+    imagetag: yadage
+  publisher:
+    publisher_type: interpolated-pub
+    publish:
+      ntuple_file: '{output_file}'
+list_lumi:
+  process:
+    process_type: 'interpolated-script-cmd'
+    script: |
+      cd helper
+      make RunListRunLumi
+      ./RunListRunLumi {input_file} > {output_file}
+  environment:
+    environment_type: 'docker-encapsulated'
+    image: alintulu/cmssw-slc6
+    imagetag: yadage
+  publisher:
+    publisher_type: interpolated-pub
+    publish:
+      lumi_file: '{output_file}'
+match_files:
+  process:
+    process_type: 'interpolated-script-cmd'
+    script: |
+      cd helper
+      make RunMatchFiles
+      cat {lumi_file_PU} {lumi_file_noPU} | ./RunMatchFiles > {outputfile}
+  environment:
+    environment_type: 'docker-encapsulated'
+    image: alintulu/cmssw-slc6
+    imagetag: yadage
+  publisher:
+    publisher_type: interpolated-pub
+    publish:
+      match_file: '{output_file}'
