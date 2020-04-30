@@ -1,22 +1,27 @@
 ## Test showcasing scatter-gather paradigm and subworkflows
 
-### Workflow
-
 ```
 yadage-run workdir workflow.yaml inputs_less.yaml
 ```
 
-The file workflow.yaml first calls the subworkflow.yaml. The subworkflow runs as a multistep-stage
-with batchsize 5, meaning that N number of jobs are created, each job having as input 5 files read from
-inputs_less.yaml.
+Why subworkflows? You can define an entire workflow to run as a single step in another workflow! Converting a two step workflow to a single step subworkflow.
 
-[Start subworkflow...Creating N jobs and each jobs performs:]
+The file workflow.yaml starts by calling subworkflow.yaml. The subworkflow defines two unique steps, the second depending on the first. The second step expects as input a file from the first step, it will wait until everything in step one is finished before starting.
+
+The subworkflow is called as a multistep-stage meaning that N number of jobs are created for the first step, each job having a unique input read from `inputs_less.yaml`. Without a subworfklow the second step would have to wait until all N jobs are done in step one, despite only depending on the output from one of those jobs. Fortunately with a subworkflow, scattering on steps can proceed independently. This mean that when job 5 is done with step one (create ntuple) it can continue to step two (list lumi sections) without having to wait for job 4 (or any other job) to finish step one.
+
+To see what I mean:
+
+[Start the workflow]
+
+[Start subworkflow...Creating N jobs, each job performing]
+
 1. Run creation of PU ntuples and noPU ntuples independently of eachother
 2. Runs list_lumi for PU when previous step for PU is done, same for noPU
 
-[End subworkflow...When all N jobs are done]
+[End subworkflow...When all M jobs are done for step two]
 
-3. Gather the output from the both PU and noPU list_lumi steps of the subworkflow
+3. Gather the output from both PU and noPU step two of the subworkflow
 4. Run match_files on the output
 
 ### Structure
