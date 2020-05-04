@@ -1,0 +1,35 @@
+stages:
+  - name: ntuple_PU
+    dependencies: [init]
+    scheduler:
+      scheduler_type: singlestep-stage
+      parameters:
+        input_file: {stages: init, output: input_file_PU}
+        output_file: '{workdir}/JRA_PU.root'
+        global_tag: {stages: init, output: global_tag}
+      step: {$ref: 'steps.yaml#/ntuple'}
+  - name: list_lumi_PU
+    dependencies: [ntuple_PU]
+    scheduler:
+      scheduler_type: singlestep-stage
+      parameters:
+        input_file: {stages: ntuple_PU, output: ntuple_file}
+        output_file: '{workdir}/Result.txt'
+      step: {$ref: 'steps.yaml#/list_lumi'}
+  - name: ntuple_noPU
+    dependencies: [init]
+    scheduler:
+      scheduler_type: singlestep-stage
+      parameters:
+        input_file: {stages: init, output: input_file_noPU}
+        output_file: '{workdir}/JRA_noPU.root'
+        global_tag: {stages: init, output: global_tag}
+      step: {$ref: 'steps.yaml#/ntuple'}
+  - name: list_lumi_noPU
+    dependencies: [ntuple_noPU]
+    scheduler:
+      scheduler_type: singlestep-stage
+      parameters:
+        input_file: {stages: ntuple_noPU, output: ntuple_file}
+        output_file: '{workdir}/Result.txt'
+      step: {$ref: 'steps.yaml#/list_lumi'}

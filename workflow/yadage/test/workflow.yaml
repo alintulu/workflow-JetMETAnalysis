@@ -1,23 +1,23 @@
 stages:
-  - name: map
+  - name: scatter_lumi
     dependencies: [init]
     scheduler:
       scheduler_type: multistep-stage
       parameters:
-        input_file: {step: init, output: PU_files}
-        output_file: '{workdir}/JRA_PU.root'
+        input_file_PU: {step: init, output: PU_files}
+        input_file_noPU: {step: init, output: noPU_files}
         global_tag: {step: init, output: GT}
-      workflow: {$ref: subworkflow.yaml}
+      workflow: {$ref: subflow.yaml}
       batchsize: 5
       scatter:
         method: zip
-        parameters: [input_file]
-  - name: reduce
-    dependencies: [map]
+        parameters: [input_file_PU, input_file_noPU]
+  - name: merge_lumi
+    dependencies: [scatter_lumi]
     scheduler:
       scheduler_type: singlestep-stage
       parameters:
-        lumi_file_PU: {stages: 'map.[*].list_lumi_PU', output: lumi_file}
-        lumi_file_noPU: {stages: 'map.[*].list_lumi_noPU', output: lumi_file}
+        lumi_file_PU: {stages: 'scatter_lumi.[*].list_lumi_PU', output: lumi_file}
+        lumi_file_noPU: {stages: 'scatter_lumi.[*].list_lumi_noPU', output: lumi_file}
         output_file: '{workdir}/MatchedFiles'
-      step: {$ref: steps.yml#/match_files}
+      step: {$ref: steps.yaml#/match_files}

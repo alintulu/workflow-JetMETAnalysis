@@ -30,3 +30,5 @@ noPU_files:
   - root://cmsxrootd.fnal.gov///store/mc/RunIIAutumn18DR/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/AODSIM/NoPU_102X_upgrade2018_realistic_v15-v1/270000/164E7AFA-9F0F-9D40-BBDC-AD1B86AA6597.root
   - root://cmsxrootd.fnal.gov///store/mc/RunIIAutumn18DR/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/AODSIM/NoPU_102X_upgrade2018_realistic_v15-v1/270000/6B548617-D188-8642-963C-3591240BC681.root
   - root://cmsxrootd.fnal.gov///store/mc/RunIIAutumn18DR/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/AODSIM/NoPU_102X_upgrade2018_realistic_v15-v1/270000/4BFC0A71-B660-824E-ABAE-08D2C55DE912.root
+GT:
+  - 102X_upgrade2018_realistic_v15
