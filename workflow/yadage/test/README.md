@@ -61,4 +61,80 @@ which run it belongs to and in which root file it can be found
 file it can be found in
 
 
+----------------------------------------
 
+```
+
+   ---------------------
+   | Ntuple production |   Running parallel
+   ---------------------
+     |      |      |    
+    ------  |  --------
+    | PU |  |  | NoPU |
+    ------  |  --------   
+     |      |      |
+     v      v      v
+   ---------------------
+   | List lumisections |   Running parallel
+   ---------------------
+     |      |      |    
+    ------  |  --------
+    | PU |  |  | NoPU |
+    ------  |  --------   
+     |      |      |
+     v      v      v
+  -----------------------
+  | Match lumi PU & noPU|   Single process
+  -----------------------
+           |
+           |
+           v
+  ------------------
+  |   Match jets   |   Running parallel
+  ------------------
+    |      |      |    
+    |      |      |
+    v      v      v
+  ---------------------------
+  | Compute L1  corrections |   Single process
+  ---------------------------
+           |
+           |
+           v
+  ------------------------
+  | Apply L1 corrections |   Running parallel
+  ------------------------
+    |      |      |    
+    |      |      |
+    v      v      v
+  -----------------------------------------------------
+  | Produce histograms (for higher level corrections) |   Running parallel
+  -----------------------------------------------------
+    |      |      |    
+    |      |      |
+    v      v      v
+  -----------------------------
+  | Compute L2L3  corrections |   Single process
+  -----------------------------
+           |
+           |
+           v
+  ------------------------
+  | Compute Closure files |   Running parallel
+  ------------------------
+    |      |      |    
+    |      |      |
+    v      v      v
+   ----------------------
+  |  Draw Closure plots |   Single process
+  -----------------------
+           |
+           |
+           v
+         DONE
+
+Output: 
+- Text file of L1 corrections
+- Text file of L2L3 corrections
+- Closure plots
+```
