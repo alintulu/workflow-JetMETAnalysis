@@ -1,5 +1,5 @@
 stages:
-  - name: scatter_lumi
+  - name: produce_ntuple
     dependencies: [init]
     scheduler:
       scheduler_type: multistep-stage
@@ -7,17 +7,48 @@ stages:
         input_file_PU: {step: init, output: PU_files}
         input_file_noPU: {step: init, output: noPU_files}
         global_tag: {step: init, output: GT}
-      workflow: {$ref: subflow.yaml}
+      workflow: {$ref: workflow_ntuple.yaml}
       batchsize: 5
       scatter:
         method: zip
         parameters: [input_file_PU, input_file_noPU]
-  - name: merge_lumi
-    dependencies: [scatter_lumi]
+
+  - name: match_lumi
+    dependencies: [produce]
     scheduler:
       scheduler_type: singlestep-stage
       parameters:
-        lumi_file_PU: {stages: 'scatter_lumi.[*].list_lumi_PU', output: lumi_file}
-        lumi_file_noPU: {stages: 'scatter_lumi.[*].list_lumi_noPU', output: lumi_file}
-        output_file: '{workdir}/MatchedFiles'
+        lumi_file_PU: {stages: 'produce.[*].list_lumi_PU', output: lumi_file}
+        lumi_file_noPU: {stages: 'produce.[*].list_lumi_noPU', output: lumi_file}
+        output_file: '{workdir}/MatchedFiles.yaml'
       step: {$ref: steps.yaml#/match_files}
+
+  - name: match_jets
+    dependencies: [match_lumi]
+      scheduler:
+        scheduler_type: multistep-stage
+
+  - name: compute_l1
+    dependencies: [match_jets]
+      scheduler:
+        scheduler_type: singlestep-stage
+
+  - name: higher_level
+    dependencies: [compute_l1]
+    scheduler:
+      scheduler_type: multistep-stage
+    workflow: {$ref: workflow_higher_level.yaml}
+  
+  - name: compute_l2l3
+    dependencies: [higher_level]
+      scheduler:
+        scheduler_type: singlestep-stage
+        parameters:
+          [TO DO]: {stages: 'higher_level.[*].histogram', output: [TO DO]}
+
+  - name: plots_closure
+    dependencies: [higher_level]
+      scheduler:
+        scheduler_type: singlestep-stage
+        parameters:
+          [TO DO]: {stages: 'higher_level.[*].closure', output: [TO DO]}

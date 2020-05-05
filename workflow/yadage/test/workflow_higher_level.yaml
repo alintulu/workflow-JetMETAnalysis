@@ -1,0 +1,20 @@
+stages:
+  - name: apply_l1
+    dependencies: [init]
+      scheduler:
+        scheduler_type: singlestep-stage
+
+  - name: histogram
+    dependencies: [apply_l1]
+      scheduler:
+        scheduler_type: singlestep-stage
+
+  - name: compute_l2l3
+    dependencies: [histogram]
+      scheduler:
+        scheduler_type: singlestep-stage
+
+  - name: closure
+    dependencies: [histogram]
+      scheduler:
+        scheduler_type: singlestep-stage
