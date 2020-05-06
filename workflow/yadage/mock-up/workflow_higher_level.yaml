@@ -1,0 +1,28 @@
+stages:
+  - name: apply_l1
+    dependencies: [init]
+    scheduler:
+      scheduler_type: singlestep-stage
+      parameters:
+        input_file: {stages: init, output: l1_corr}
+        input_file_PU: {stages: init, output: input_file_PU}
+        output_file: '{workdir}/applied_l1'
+      step: {$ref: 'steps.yaml#/apply_l1'}
+
+  - name: histogram
+    dependencies: [apply_l1]
+    scheduler:
+      scheduler_type: singlestep-stage
+      parameters:
+        input_file: {stages: apply_l1, output: applied_l1}
+        output_file: '{workdir}/histogram'
+      step: {$ref: 'steps.yaml#/histogram'}
+
+  - name: closure
+    dependencies: [histogram]
+    scheduler:
+      scheduler_type: singlestep-stage
+      parameters:
+        input_file: {stages: histogram, output: histo}
+        output_file: '{workdir}/closure'
+      step: {$ref: 'steps.yaml#/closure'}

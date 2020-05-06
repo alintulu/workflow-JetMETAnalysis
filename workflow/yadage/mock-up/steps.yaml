@@ -1,0 +1,108 @@
+ntuple:
+  process:
+    process_type: string-interpolated-cmd
+    cmd: echo "Input files; {input_file} \n GT; {global_tag}" > {output_file}
+  environment:
+    environment_type: localproc-env
+  publisher:
+    publisher_type: interpolated-pub
+    publish:
+      ntuple_file: '{output_file}'
+
+list_lumi:
+  process:
+    process_type: string-interpolated-cmd
+    cmd: echo {input_file} > {output_file}
+  environment:
+    environment_type: localproc-env
+  publisher:
+    publisher_type: interpolated-pub
+    publish:
+      lumi_file: '{output_file}'
+      
+match_files:
+  process:
+    process_type: string-interpolated-cmd
+    cmd: echo "MatchedFiles:" > {output_file}; for i in $(cat {lumi_file_PU}); do echo "  - $i" >> {output_file}; done; for i in $(cat {lumi_file_noPU}); do echo "  - $i" >> {output_file}; done
+  environment:
+    environment_type: localproc-env
+  publisher:
+    publisher_type: fromyaml-pub
+    yamlfile: 'MatchedFiles.yml'
+
+match_jets:
+  process:
+    process_type: string-interpolated-cmd
+    cmd: echo "Matching jets of {input_file}" > {output_file}
+  environment:
+    environment_type: localproc-env
+  publisher:
+    publisher_type: interpolated-pub
+    publish:
+      matched_file: '{output_file}'
+
+compute_l1:
+  process:
+    process_type: string-interpolated-cmd
+    cmd: echo "Create l1 corrections from {input_file}" > {output_file}
+  environment:
+    environment_type: localproc-env
+  publisher:
+    publisher_type: interpolated-pub
+    publish:
+      l1_corr: '{output_file}'
+
+apply_l1:
+  process:
+    process_type: string-interpolated-cmd
+    cmd: echo "Apply {input_file} on {input_file_PU}" > {output_file}
+  environment:
+    environment_type: localproc-env
+  publisher:
+    publisher_type: interpolated-pub
+    publish:
+      applied_l1: '{output_file}'
+
+histogram:
+  process:
+    process_type: string-interpolated-cmd
+    cmd: echo "Create histograms out of {input_file}" > {output_file}
+  environment:
+    environment_type: localproc-env
+  publisher:
+    publisher_type: interpolated-pub
+    publish:
+      histo: '{output_file}'
+
+compute_l2l3:
+  process:
+    process_type: string-interpolated-cmd
+    cmd: echo "Create l2l3 corrections from {input_file}" > {output_file}
+  environment:
+    environment_type: localproc-env
+  publisher:
+    publisher_type: interpolated-pub
+    publish:
+      l2l3_corr: '{output_file}'
+  
+closure:
+  process:
+    process_type: string-interpolated-cmd
+    cmd: echo "Create closure file from {input_file}" > {output_file}
+  environment:
+    environment_type: localproc-env
+  publisher:
+    publisher_type: interpolated-pub
+    publish:
+      closure: '{output_file}'
+
+plot_closure:
+  process:
+    process_type: string-interpolated-cmd
+    cmd: echo {input_file} > {output_file}
+  environment:
+    environment_type: localproc-env
+  publisher:
+    publisher_type: interpolated-pub
+    publish:
+      closure: '{output_file}'

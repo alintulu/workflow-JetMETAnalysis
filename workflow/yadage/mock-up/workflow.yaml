@@ -1,0 +1,77 @@
+stages:
+  - name: produce_ntuple
+    dependencies: [init]
+    scheduler:
+      scheduler_type: multistep-stage
+      parameters:
+        input_file_PU: {step: init, output: PU_files, unwrap: true}
+        input_file_noPU: {step: init, output: noPU_files, unwrap: true}
+        global_tag: {step: init, output: GT}
+      workflow: {$ref: workflow_ntuple.yaml}
+      batchsize: 5
+      scatter:
+        method: zip
+        parameters: [input_file_PU, input_file_noPU]
+
+  - name: match_lumi
+    dependencies: [produce_ntuple]
+    scheduler:
+      scheduler_type: singlestep-stage
+      parameters:
+        lumi_file_PU: {stages: 'produce_ntuple.[*].list_lumi_PU', output: lumi_file}
+        lumi_file_noPU: {stages: 'produce_ntuple.[*].list_lumi_noPU', output: lumi_file}
+        output_file: '{workdir}/MatchedFiles.yml'
+      step: {$ref: steps.yaml#/match_files}
+
+  - name: match_jets
+    dependencies: [match_lumi]
+    scheduler:
+      scheduler_type: multistep-stage
+      parameters:
+        input_file: {stages: 'match_lumi', output: MatchedFiles, unwrap: true}
+        output_file: '{workdir}/matched_jets'
+      batchsize: 2
+      scatter:
+        method: zip
+        parameters: [input_file]
+      step: {$ref: steps.yaml#/match_jets}
+
+  - name: compute_l1
+    dependencies: [match_jets]
+    scheduler:
+      scheduler_type: singlestep-stage
+      parameters:
+        input_file: {stages: 'match_jets', output: matched_file}
+        output_file: '{workdir}/l1_corrections.txt'
+      step: {$ref: steps.yaml#/compute_l1}
+
+  - name: higher_level
+    dependencies: [compute_l1]
+    scheduler:
+      scheduler_type: multistep-stage
+      parameters:
+        l1_corr: {stages: 'compute_l1', output: l1_corr}
+        input_file_PU: {step: init, output: PU_files, unwrap: true}
+      batchsize: 5
+      scatter:
+        method: zip
+        parameters: [input_file_PU]
+      workflow: {$ref: workflow_higher_level.yaml}
+  
+  - name: compute_l2l3
+    dependencies: [higher_level]
+    scheduler:
+      scheduler_type: singlestep-stage
+      parameters:
+        input_file: {stages: 'higher_level.[*].histogram', output: histo}
+        output_file: '{workdir}/l2l3_corrections.txt'
+      step: {$ref: 'steps.yaml#/compute_l2l3'}
+
+  - name: plots_closure
+    dependencies: [higher_level]
+    scheduler:
+      scheduler_type: singlestep-stage
+      parameters:
+        input_file: {stages: 'higher_level.[*].closure', output: closure}
+        output_file: '{workdir}/closure.png'
+      step: {$ref: 'steps.yaml#/plot_closure'}
