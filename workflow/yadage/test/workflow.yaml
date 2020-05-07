@@ -1,0 +1,14 @@
+stages:
+  - name: produce_ntuple
+    dependencies: [init]
+    scheduler:
+      scheduler_type: multistep-stage
+      parameters:
+        input_file_PU: ["/eos/user/a/adlintul/JRA/PU3/JRA0256.root", "/eos/user/a/adlintul/JRA/PU3/JRA069.root"] #{step: init, output: PU_files, unwrap: true}
+        input_file_noPU: ["/eos/user/a/adlintul/JRA/noPU2/JRA71.root", "/eos/user/a/adlintul/JRA/noPU2/JRA90.root"] #{step: init, output: noPU_files, unwrap: true}
+        #global_tag: {step: init, output: GT}
+      workflow: {$ref: workflow_ntuple.yaml}
+      #batchsize: 5
+      scatter:
+        method: zip
+        parameters: [input_file_PU, input_file_noPU]
