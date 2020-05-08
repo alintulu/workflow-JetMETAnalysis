@@ -7,6 +7,8 @@ stages:
         input_file_PU: {step: init, output: PU_files, unwrap: true}
         input_file_noPU: {step: init, output: noPU_files, unwrap: true}
         global_tag: {step: init, output: GT}
+        algo1: {step: init, output: ALGO1}
+        algo2: {step: init, output: ALGO2}
       workflow: {$ref: workflow_ntuple.yaml}
       batchsize: 5
       scatter:
@@ -30,6 +32,8 @@ stages:
       parameters:
         input_file: {stages: 'match_lumi', output: MatchedFiles, unwrap: true}
         output_file: '{workdir}/matched_jets'
+        algo1: {step: init, output: ALGO1}
+        algo2: {step: init, output: ALGO2}
       batchsize: 2
       scatter:
         method: zip
@@ -43,6 +47,9 @@ stages:
       parameters:
         input_file: {stages: 'match_jets', output: matched_file}
         output_file: '{workdir}/l1_corrections.txt'
+        algo1: {step: init, output: ALGO1}
+        algo2: {step: init, output: ALGO2}
+        era: {step: init, output: ERA}
       step: {$ref: steps.yaml#/compute_l1}
 
   - name: higher_level
@@ -52,6 +59,9 @@ stages:
       parameters:
         l1_corr: {stages: 'compute_l1', output: l1_corr}
         input_file_PU: {step: init, output: PU_files, unwrap: true}
+        algo1: {step: init, output: ALGO1}
+        algo2: {step: init, output: ALGO2}
+        era: {step: init, output: ERA}
       batchsize: 5
       scatter:
         method: zip
@@ -65,6 +75,7 @@ stages:
       parameters:
         input_file: {stages: 'higher_level.[*].histogram', output: histo}
         output_file: '{workdir}/l2l3_corrections.txt'
+        era: {step: init, output: ERA}
       step: {$ref: 'steps.yaml#/compute_l2l3'}
 
   - name: plots_closure
