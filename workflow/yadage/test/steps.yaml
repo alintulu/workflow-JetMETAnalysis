@@ -12,10 +12,9 @@ ntuple:
 list_lumi:
   process:
     process_type: string-interpolated-cmd
-    cmd: ./RunListRunLumi {input_file} > {output_file}
+    cmd: echo {input_file} > {output_file}
   environment:
-    environment_type: docker-encapsulated
-    image: cmssw/slc6
+    environment_type: localproc-env
   publisher:
     publisher_type: interpolated-pub
     publish:
