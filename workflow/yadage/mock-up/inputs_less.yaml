@@ -32,3 +32,9 @@ noPU_files:
   - root://cmsxrootd.fnal.gov///store/mc/RunIIAutumn18DR/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/AODSIM/NoPU_102X_upgrade2018_realistic_v15-v1/270000/4BFC0A71-B660-824E-ABAE-08D2C55DE912.root
 GT:
   - 102X_upgrade2018_realistic_v15
+ALGO1:
+  - ak4pf
+ALGO2:
+  - ak4pf
+ERA:
+  - ParallelMC
