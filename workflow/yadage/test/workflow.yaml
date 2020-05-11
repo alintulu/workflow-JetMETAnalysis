@@ -43,9 +43,35 @@ stages:
     scheduler:
       scheduler_type: singlestep-stage
       parameters:
-        script: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src/reana-demo-JetMETAnalysis/workflow/yadage/test/code/HarvestStep2.sh
+        script1: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src/reana-demo-JetMETAnalysis/workflow/yadage/test/code/HarvestStep2.sh
+        script2: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src/reana-demo-JetMETAnalysis/workflow/yadage/test/code/deriveL1.C
         input_file: {stages: 'match_jets', output: matched_file}
         code: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src
         output_path: '{workdir}'
-        output_file: '{workdir}/ParallelMCPreDeriveL1_L1FastJet_AK4PF.txt'
+        output_file: '{workdir}/ParallelMC_L1FastJet_AK4PF.txt'
       step: {$ref: steps.yaml#/compute_l1}
+
+  - name: higher_level
+    dependencies: [compute_l1]
+    scheduler:
+      scheduler_type: multistep-stage
+      parameters:
+        l1_corr: {stages: 'compute_l1', output: l1_corr}
+        input_file: {stages: init, output: files_PU, unwrap: true}
+      scatter:
+        method: zip
+        parameters: [input_file]
+      workflow: {$ref: workflow_higher_level.yaml}
+
+  - name: compute_l2l3
+    dependencies: [higher_level]
+    scheduler:
+      scheduler_type: singlestep-stage
+      parameters:
+        input_file: {stages: 'higher_level.[*].apply_l1', output: applied_l1}
+        script: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src/reana-demo-JetMETAnalysis/workflow/yadage/test/code/HarvestStep3.sh
+        output_path: '{workdir}'
+        output_file: '{workdir}/ParallelMC_L2Relative_AK4PF.txt'
+        code: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src
+      step: {$ref: 'steps.yaml#/compute_l2l3'}
+

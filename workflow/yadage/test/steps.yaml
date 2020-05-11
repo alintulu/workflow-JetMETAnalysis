@@ -44,7 +44,7 @@ match_jets:
 compute_l1:
   process:
     process_type: string-interpolated-cmd
-    cmd: "source {script} {output_path} {input_file} {code}"
+    cmd: "source {script1} {output_path} {input_file} {code}; root {script2} -b -q"
   environment:
     environment_type: localproc-env
   publisher:
@@ -55,7 +55,7 @@ compute_l1:
 apply_l1:
   process:
     process_type: string-interpolated-cmd
-    cmd: echo "Apply {input_file} on {input_file_PU}" > {output_file}
+    cmd: "cp {base}/My*.root .; cp {code}/JetMETAnalysis/JetAnalyzers/config/jra_dr_finebinning.config jra.config; cp {l1_corr} ParallelMC_L1FastJet_AK4PF.txt; source {script} {output_path} {input_file} {code}"
   environment:
     environment_type: localproc-env
   publisher:
@@ -77,7 +77,7 @@ histogram:
 compute_l2l3:
   process:
     process_type: string-interpolated-cmd
-    cmd: echo "Create l2l3 corrections from {input_file}" > {output_file}
+    cmd: "source {script} {output_path} '{input_file}' {code}"
   environment:
     environment_type: localproc-env
   publisher:
@@ -88,7 +88,7 @@ compute_l2l3:
 closure:
   process:
     process_type: string-interpolated-cmd
-    cmd: echo "Create closure file from {input_file}" > {output_file}
+    cmd: "cp {l1_corr} .; cp {base}/My*.root .; source {script} {output_path} {input_file} {code}"
   environment:
     environment_type: localproc-env
   publisher:

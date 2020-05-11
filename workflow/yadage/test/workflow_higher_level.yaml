@@ -1,0 +1,14 @@
+stages:
+  - name: apply_l1
+    dependencies: [init]
+    scheduler:
+      scheduler_type: singlestep-stage
+      parameters:
+        script: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src/reana-demo-JetMETAnalysis/workflow/yadage/test/code/Step3ApplyL1.sh
+        code: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src
+        l1_corr: {stages: init, output: l1_corr, unwrap: true}
+        input_file: {stages: init, output: input_file}
+        output_path: '{workdir}'
+        base: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src/reana-demo-JetMETAnalysis/workflow/yadage/test/input
+        output_file: '{workdir}/jra_jecl1.root'
+      step: {$ref: 'steps.yaml#/apply_l1'}
