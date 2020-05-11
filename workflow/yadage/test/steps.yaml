@@ -77,7 +77,7 @@ histogram:
 compute_l2l3:
   process:
     process_type: string-interpolated-cmd
-    cmd: "source {script} {output_path} '{input_file}' {code}"
+    cmd: "source {script} {output_path} '{input_file}' {code}; cp ParallelMC_L2Relative_AK4PFl1.txt ParallelMC_L2Relative_AK4PF.txt"
   environment:
     environment_type: localproc-env
   publisher:
@@ -88,7 +88,7 @@ compute_l2l3:
 closure:
   process:
     process_type: string-interpolated-cmd
-    cmd: "cp {l1_corr} .; cp {base}/My*.root .; source {script} {output_path} {input_file} {code}"
+    cmd: "cp {l1_corr} .; cp {l2l3_corr} .; cp {base}/My*.root .; source {script} {output_path} {input_file} {code}"
   environment:
     environment_type: localproc-env
   publisher:
@@ -99,7 +99,7 @@ closure:
 plot_closure:
   process:
     process_type: string-interpolated-cmd
-    cmd: echo {input_file} > {output_file}
+    cmd: "source {script} {output_path} '{input_file}' {code}"
   environment:
     environment_type: localproc-env
   publisher:

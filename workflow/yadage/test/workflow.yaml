@@ -75,3 +75,33 @@ stages:
         code: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src
       step: {$ref: 'steps.yaml#/compute_l2l3'}
 
+  - name: closure
+    dependencies: [compute_l2l3]
+    scheduler:
+      scheduler_type: multistep-stage
+      parameters:
+        l1_corr: {stages: 'compute_l1', output: l1_corr}
+        l2l3_corr: {stages: 'compute_l2l3', output: l2l3_corr}
+        input_file: {stages: init, output: files_PU, unwrap: true}
+        script: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src/reana-demo-JetMETAnalysis/workflow/yadage/test/code/Step4Closure.sh
+        output_path: '{workdir}'
+        base: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src/reana-demo-JetMETAnalysis/workflow/yadage/test/input
+        output_file: '{workdir}/Closure_ak4pf.root'
+        code: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src
+      scatter:
+        method: zip
+        parameters: [input_file]
+      step: {$ref: 'steps.yaml#/closure'}
+
+  - name: plots_closure
+    dependencies: [closure]
+    scheduler:
+      scheduler_type: singlestep-stage
+      parameters:
+        input_file: {stages: 'closure', output: closure}
+        script: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src/reana-demo-JetMETAnalysis/workflow/yadage/test/code/HarvestStep4.sh
+        output_path: '{workdir}'
+        base: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src/reana-demo-JetMETAnalysis/workflow/yadage/test/input
+        output_file: '{workdir}/Closure_ak4pf.root'
+        code: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src
+      step: {$ref: 'steps.yaml#/plot_closure'}
