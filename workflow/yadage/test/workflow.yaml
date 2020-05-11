@@ -1,10 +1,39 @@
 stages:
   - name: produce_ntuple
+    dependencies: [init]
     scheduler:
       scheduler_type: singlestep-stage
       parameters:
-        input_file_PU: ["/eos/user/a/adlintul/JRA/PU3/JRA0256.root", "/eos/user/a/adlintul/JRA/PU3/JRA069.root"] #{step: init, output: PU_files, unwrap: true}
-        input_file_noPU: ["/eos/user/a/adlintul/JRA/noPU2/JRA71.root", "/eos/user/a/adlintul/JRA/noPU2/JRA90.root"] #{step: init, output: noPU_files, unwrap: true}
+        script: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src/reana-demo-JetMETAnalysis/workflow/yadage/test/code/RunListRunLumi
+        input_file_PU: {stages: init, output: files_PU, unwrap: true} #["/eos/user/a/adlintul/JRA/PU3/JRA090.root", "/eos/user/a/adlintul/JRA/PU3/JRA00.root", "/eos/user/a/adlintul/JRA/PU3/JRA01.root"] #{step: init, output: PU_files, unwrap: true}
+        input_file_noPU: {stages: init, output: files_noPU, unwrap: true} #["/eos/user/a/adlintul/JRA/noPU2/JRA71.root", /eos/user/a/adlintul/JRA/noPU2/JRA0.root:/eos/user/a/adlintul/JRA/noPU2/JRA1.root:/eos/user/a/adlintul/JRA/noPU2/JRA11.root:/eos/user/a/adlintul/JRA/noPU2/JRA12.root:/eos/user/a/adlintul/JRA/noPU2/JRA17.root:/eos/user/a/adlintul/JRA/noPU2/JRA18.root:/eos/user/a/adlintul/JRA/noPU2/JRA20.root:/eos/user/a/adlintul/JRA/noPU2/JRA21.root:/eos/user/a/adlintul/JRA/noPU2/JRA22.root:/eos/user/a/adlintul/JRA/noPU2/JRA23.root:/eos/user/a/adlintul/JRA/noPU2/JRA24.root:/eos/user/a/adlintul/JRA/noPU2/JRA25.root ] #{step: init, output: noPU_files, unwrap: true}
         #global_tag: {step: init, output: GT}
       workflow: {$ref: workflow_ntuple.yaml}
-      #batchsize: 5
+
+  - name: match_lumi
+    dependencies: [produce_ntuple]
+    scheduler:
+      scheduler_type: singlestep-stage
+      parameters:
+        script1: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src/reana-demo-JetMETAnalysis/workflow/yadage/test/code/RunMatchFiles
+        script2: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src/reana-demo-JetMETAnalysis/workflow/yadage/test/code/test
+        lumi_file_PU: {stages: 'produce_ntuple[*].list_lumi_PU', output: lumi_file}
+        lumi_file_noPU: {stages: 'produce_ntuple[*].list_lumi_noPU', output: lumi_file}
+        output_file: '{workdir}/MatchedFiles.yml'
+      step: {$ref: steps.yaml#/match_files}
+
+  - name: match_jets
+    dependencies: [match_lumi]
+    scheduler:
+      scheduler_type: multistep-stage
+      parameters:
+        base: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src/reana-demo-JetMETAnalysis/workflow/yadage/test/input
+        script: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src/reana-demo-JetMETAnalysis/workflow/yadage/test/code/Step2PUMatching.sh
+        code: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src
+        input_file: {stages: 'match_lumi', output: MatchedFiles, unwrap: true}
+        output_path: '{workdir}'
+        output_file: '{workdir}/output_ak4pf.root'
+      scatter:
+        method: zip
+        parameters: [input_file]
+      step: {$ref: steps.yaml#/match_jets}

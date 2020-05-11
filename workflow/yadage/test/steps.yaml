@@ -12,7 +12,7 @@ ntuple:
 list_lumi:
   process:
     process_type: string-interpolated-cmd
-    cmd: echo {input_file} > {output_file}
+    cmd: "{script} {input_file} > {output_file}"
   environment:
     environment_type: localproc-env
   publisher:
@@ -23,7 +23,7 @@ list_lumi:
 match_files:
   process:
     process_type: string-interpolated-cmd
-    cmd: echo "MatchedFiles:" > {output_file}; for i in $(cat {lumi_file_PU}); do echo "  - $i" >> {output_file}; done; for i in $(cat {lumi_file_noPU}); do echo "  - $i" >> {output_file}; done
+    cmd: "cat {lumi_file_noPU} {lumi_file_PU} | {script1} > MatchedFiles; echo 'MatchedFiles:' > MatchedFiles.yml; {script2} MatchedFiles >> MatchedFiles.yml"
   environment:
     environment_type: localproc-env
   publisher:
@@ -33,7 +33,7 @@ match_files:
 match_jets:
   process:
     process_type: string-interpolated-cmd
-    cmd: echo "Matching jets of {input_file}" > {output_file}
+    cmd: "cp {base}/My*.root .; source {script} {output_path} {input_file} {code}"
   environment:
     environment_type: localproc-env
   publisher:
