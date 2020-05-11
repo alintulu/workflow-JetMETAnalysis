@@ -37,3 +37,15 @@ stages:
         method: zip
         parameters: [input_file]
       step: {$ref: steps.yaml#/match_jets}
+
+  - name: compute_l1
+    dependencies: [match_jets]
+    scheduler:
+      scheduler_type: singlestep-stage
+      parameters:
+        script: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src/reana-demo-JetMETAnalysis/workflow/yadage/test/code/HarvestStep2.sh
+        input_file: {stages: 'match_jets', output: matched_file}
+        code: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src
+        output_path: '{workdir}'
+        output_file: '{workdir}/ParallelMCPreDeriveL1_L1FastJet_AK4PF.txt'
+      step: {$ref: steps.yaml#/compute_l1}

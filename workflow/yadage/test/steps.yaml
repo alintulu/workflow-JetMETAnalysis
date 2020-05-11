@@ -44,7 +44,7 @@ match_jets:
 compute_l1:
   process:
     process_type: string-interpolated-cmd
-    cmd: echo "Create l1 corrections from {input_file}" > {output_file}
+    cmd: "source {script} {output_path} {input_file} {code}"
   environment:
     environment_type: localproc-env
   publisher:
