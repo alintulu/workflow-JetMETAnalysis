@@ -10,18 +10,8 @@ CodeDir=$3
 
 cd $CodeDir
 
-jet_apply_jec_x \
-   -input $Files \
-   -output $WorkDir/JRA_jecl1.root \
-   -jecpath $WorkDir \
-   -era ParallelMC \
-   -levels 1 \
-   -algs ak4pf \
-   -L1FastJet true \
-   -saveitree false
-
 jet_response_analyzer_x jra.config \
-   -input $WorkDir/JRA_jecl1.root \
+   -input $Files \
    -nbinsabsrsp 0 \
    -nbinsetarsp 0 \
    -nbinsphirsp 0 \

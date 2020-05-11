@@ -68,7 +68,7 @@ stages:
     scheduler:
       scheduler_type: singlestep-stage
       parameters:
-        input_file: {stages: 'higher_level.[*].apply_l1', output: applied_l1}
+        input_file: {stages: 'higher_level.[*].histogram', output: histo}
         script: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src/reana-demo-JetMETAnalysis/workflow/yadage/test/code/HarvestStep3.sh
         output_path: '{workdir}'
         output_file: '{workdir}/ParallelMC_L2Relative_AK4PF.txt'

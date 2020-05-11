@@ -55,7 +55,7 @@ compute_l1:
 apply_l1:
   process:
     process_type: string-interpolated-cmd
-    cmd: "cp {base}/My*.root .; cp {code}/JetMETAnalysis/JetAnalyzers/config/jra_dr_finebinning.config jra.config; cp {l1_corr} ParallelMC_L1FastJet_AK4PF.txt; source {script} {output_path} {input_file} {code}"
+    cmd: "cp {l1_corr} ParallelMC_L1FastJet_AK4PF.txt; source {script} {output_path} {input_file} {code}"
   environment:
     environment_type: localproc-env
   publisher:
@@ -66,7 +66,7 @@ apply_l1:
 histogram:
   process:
     process_type: string-interpolated-cmd
-    cmd: echo "Create histograms out of {input_file}" > {output_file}
+    cmd: "cp {base}/My*.root .; cp {code}/JetMETAnalysis/JetAnalyzers/config/jra_dr_finebinning.config jra.config; source {script} {output_path} {input_file} {code}"
   environment:
     environment_type: localproc-env
   publisher:
