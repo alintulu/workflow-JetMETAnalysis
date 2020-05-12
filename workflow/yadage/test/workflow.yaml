@@ -5,9 +5,9 @@ stages:
       scheduler_type: singlestep-stage
       parameters:
         script: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src/reana-demo-JetMETAnalysis/workflow/yadage/test/code/RunListRunLumi
-        input_file_PU: {stages: init, output: files_PU, unwrap: true} #["/eos/user/a/adlintul/JRA/PU3/JRA090.root", "/eos/user/a/adlintul/JRA/PU3/JRA00.root", "/eos/user/a/adlintul/JRA/PU3/JRA01.root"] #{step: init, output: PU_files, unwrap: true}
-        input_file_noPU: {stages: init, output: files_noPU, unwrap: true} #["/eos/user/a/adlintul/JRA/noPU2/JRA71.root", /eos/user/a/adlintul/JRA/noPU2/JRA0.root:/eos/user/a/adlintul/JRA/noPU2/JRA1.root:/eos/user/a/adlintul/JRA/noPU2/JRA11.root:/eos/user/a/adlintul/JRA/noPU2/JRA12.root:/eos/user/a/adlintul/JRA/noPU2/JRA17.root:/eos/user/a/adlintul/JRA/noPU2/JRA18.root:/eos/user/a/adlintul/JRA/noPU2/JRA20.root:/eos/user/a/adlintul/JRA/noPU2/JRA21.root:/eos/user/a/adlintul/JRA/noPU2/JRA22.root:/eos/user/a/adlintul/JRA/noPU2/JRA23.root:/eos/user/a/adlintul/JRA/noPU2/JRA24.root:/eos/user/a/adlintul/JRA/noPU2/JRA25.root ] #{step: init, output: noPU_files, unwrap: true}
-        #global_tag: {step: init, output: GT}
+        input_file_PU: {stages: init, output: files_PU, unwrap: true}
+        input_file_noPU: {stages: init, output: files_noPU, unwrap: true}
+        global_tag: {step: init, output: GT}
       workflow: {$ref: workflow_ntuple.yaml}
 
   - name: match_lumi
@@ -33,6 +33,8 @@ stages:
         input_file: {stages: 'match_lumi', output: MatchedFiles, unwrap: true}
         output_path: '{workdir}'
         output_file: '{workdir}/output_ak4pf.root'
+        algo1: {step: init, output: ALGO1}
+        algo2: {step: init, output: ALGO2}
       scatter:
         method: zip
         parameters: [input_file]
@@ -49,6 +51,8 @@ stages:
         code: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src
         output_path: '{workdir}'
         output_file: '{workdir}/ParallelMC_L1FastJet_AK4PF.txt'
+        algo1: {step: init, output: ALGO1}
+        algo2: {step: init, output: ALGO2}
       step: {$ref: steps.yaml#/compute_l1}
 
   - name: higher_level
@@ -58,6 +62,7 @@ stages:
       parameters:
         l1_corr: {stages: 'compute_l1', output: l1_corr}
         input_file: {stages: init, output: files_PU, unwrap: true}
+        algs: {step: init, output: ALGO1}
       scatter:
         method: zip
         parameters: [input_file]
@@ -73,6 +78,7 @@ stages:
         output_path: '{workdir}'
         output_file: '{workdir}/ParallelMC_L2Relative_AK4PF.txt'
         code: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src
+        algs: {step: init, output: ALGO1}
       step: {$ref: 'steps.yaml#/compute_l2l3'}
 
   - name: closure
@@ -88,6 +94,7 @@ stages:
         base: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src/reana-demo-JetMETAnalysis/workflow/yadage/test/input
         output_file: '{workdir}/Closure_ak4pf.root'
         code: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src
+        algs: {step: init, output: ALGO1}
       scatter:
         method: zip
         parameters: [input_file]

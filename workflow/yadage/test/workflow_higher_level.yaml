@@ -8,6 +8,7 @@ stages:
         code: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src
         l1_corr: {stages: init, output: l1_corr, unwrap: true}
         input_file: {stages: init, output: input_file}
+        algs: {step: init, output: algs}
         output_path: '{workdir}'
         base: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src/reana-demo-JetMETAnalysis/workflow/yadage/test/input
         output_file: '{workdir}/JRA_jecl1.root'
@@ -19,6 +20,7 @@ stages:
       scheduler_type: singlestep-stage
       parameters:
         input_file: {stages: apply_l1, output: applied_l1}
+        algs: {step: init, output: algs}
         script: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src/reana-demo-JetMETAnalysis/workflow/yadage/test/code/Step3ApplyL1_B.sh
         code: /afs/cern.ch/user/a/adlintul/testjec/CMSSW_10_2_5/src
         output_path: '{workdir}'
