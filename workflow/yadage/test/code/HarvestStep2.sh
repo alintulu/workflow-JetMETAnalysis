@@ -6,8 +6,6 @@ CodeDir=$3
 
 hadd -k -f output_ak4pf.root $Output
 
-cd $CodeDir
-
 jet_synchfit_x \
    -inputDir  $WorkDir \
    -outputDir $WorkDir \
