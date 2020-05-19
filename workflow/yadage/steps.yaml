@@ -1,0 +1,12 @@
+ntuple:
+  process:
+    process_type: 'interpolated-script-cmd'
+    script: |
+      echo {input_file} {global_tag} > {output_file}
+  environment:
+    environment_type: 'docker-encapsulated'
+    image: busybox
+  publisher:
+    publisher_type: interpolated-pub
+    publish:
+      ntuple_file: '{output_file}'

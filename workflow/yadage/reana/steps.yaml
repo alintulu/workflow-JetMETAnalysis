@@ -1,0 +1,121 @@
+ntuple:
+  process:
+    process_type: string-interpolated-cmd
+    cmd: echo "Input files; {input_file} \n GT; {global_tag}" > {output_file}
+  environment:
+    environment_type: localproc-env
+  publisher:
+    publisher_type: interpolated-pub
+    publish:
+      ntuple_file: '{output_file}'
+
+list_lumi:
+  process:
+    process_type: string-interpolated-cmd
+    cmd: "{script} {input_file} > {output_file}"
+  environment:
+    environment_type: localproc-env
+  publisher:
+    publisher_type: interpolated-pub
+    publish:
+      lumi_file: '{output_file}'
+      
+match_files:
+  process:
+    process_type: string-interpolated-cmd
+    cmd: "cat {lumi_file_noPU} {lumi_file_PU} | {script1} > MatchedFiles; echo 'MatchedFiles:' > MatchedFiles.yml; {script2} MatchedFiles >> MatchedFiles.yml"
+  environment:
+    environment_type: localproc-env
+  publisher:
+    publisher_type: fromyaml-pub
+    yamlfile: 'MatchedFiles.yml'
+
+match_jets:
+  process:
+    process_type: string-interpolated-cmd
+    cmd: "cp {base}/My*.root .; source {script} {output_path} {input_file} {code}"
+  environment:
+    environment_type: localproc-env
+  publisher:
+    publisher_type: interpolated-pub
+    publish:
+      matched_file: '{output_file}'
+
+compute_l1:
+  process:
+    process_type: interpolated-script-cmd
+    interpreter: bash
+    script: |
+      hadd -k -f output_ak4pf.root '{input_file}'
+      jet_synchfit_x \
+        -inputDir {output_path} \
+        -outputDir {output_path} \
+        -algo1 ak4pf \
+        -algo2 ak4pf \
+        -highPU false \
+        -useNPU false \
+        -functionType standard \
+        -era ParallelMCPreDeriveL1
+
+      root {script2} -b -q
+  environment:
+    environment_type: localproc-env
+  publisher:
+    publisher_type: interpolated-pub
+    publish:
+      l1_corr: '{output_file}'
+
+apply_l1:
+  process:
+    process_type: string-interpolated-cmd
+    cmd: "cp {l1_corr} ParallelMC_L1FastJet_AK4PF.txt; source {script} {output_path} {input_file} {code}"
+  environment:
+    environment_type: localproc-env
+  publisher:
+    publisher_type: interpolated-pub
+    publish:
+      applied_l1: '{output_file}'
+
+histogram:
+  process:
+    process_type: string-interpolated-cmd
+    cmd: "cp {base}/My*.root .; cp {code}/JetMETAnalysis/JetAnalyzers/config/jra_dr_finebinning.config jra.config; source {script} {output_path} {input_file} {code}"
+  environment:
+    environment_type: localproc-env
+  publisher:
+    publisher_type: interpolated-pub
+    publish:
+      histo: '{output_file}'
+
+compute_l2l3:
+  process:
+    process_type: string-interpolated-cmd
+    cmd: "source {script} {output_path} '{input_file}' {code}; cp ParallelMC_L2Relative_AK4PFl1.txt ParallelMC_L2Relative_AK4PF.txt"
+  environment:
+    environment_type: localproc-env
+  publisher:
+    publisher_type: interpolated-pub
+    publish:
+      l2l3_corr: '{output_file}'
+  
+closure:
+  process:
+    process_type: string-interpolated-cmd
+    cmd: "cp {l1_corr} .; cp {l2l3_corr} .; cp {base}/My*.root .; source {script} {output_path} {input_file} {code}"
+  environment:
+    environment_type: localproc-env
+  publisher:
+    publisher_type: interpolated-pub
+    publish:
+      closure: '{output_file}'
+
+plot_closure:
+  process:
+    process_type: string-interpolated-cmd
+    cmd: "source {script} {output_path} '{input_file}' {code}"
+  environment:
+    environment_type: localproc-env
+  publisher:
+    publisher_type: interpolated-pub
+    publish:
+      closure: '{output_file}'
