@@ -1,14 +1,13 @@
 files_PU:
-    - /eos/user/a/adlintul/JRA/PU3/JRA090.root
+    - /eos/user/a/adlintul/JRA/PU3/JRA0180.root
     - /eos/user/a/adlintul/JRA/PU3/JRA00.root
     - /eos/user/a/adlintul/JRA/PU3/JRA01.root
 files_noPU:
-    - /eos/user/a/adlintul/JRA/noPU2/JRA71.root
     - /eos/user/a/adlintul/JRA/noPU2/JRA0.root
     - /eos/user/a/adlintul/JRA/noPU2/JRA1.root
-    - /eos/user/a/adlintul/JRA/noPU2/JRA11.root
-    - /eos/user/a/adlintul/JRA/noPU2/JRA12.root
-    - /eos/user/a/adlintul/JRA/noPU2/JRA17.root
-    - /eos/user/a/adlintul/JRA/noPU2/JRA18.root
-    - /eos/user/a/adlintul/JRA/noPU2/JRA20.root
-    - /eos/user/a/adlintul/JRA/noPU2/JRA21.root
+    - /eos/user/a/adlintul/JRA/noPU2/JRA58.root
+    - /eos/user/a/adlintul/JRA/noPU2/JRA99.root
+    - /eos/user/a/adlintul/JRA/noPU2/JRA94.root
+    - /eos/user/a/adlintul/JRA/noPU2/JRA89.root
+    - /eos/user/a/adlintul/JRA/noPU2/JRA66.root
+    - /eos/user/a/adlintul/JRA/noPU2/JRA92.root

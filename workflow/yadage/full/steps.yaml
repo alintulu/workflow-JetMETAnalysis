@@ -43,21 +43,8 @@ match_jets:
 
 compute_l1:
   process:
-    process_type: interpolated-script-cmd
-    interpreter: bash
-    script: |
-      hadd -k -f output_ak4pf.root '{input_file}'
-      jet_synchfit_x \
-        -inputDir {output_path} \
-        -outputDir {output_path} \
-        -algo1 ak4pf \
-        -algo2 ak4pf \
-        -highPU false \
-        -useNPU false \
-        -functionType standard \
-        -era ParallelMCPreDeriveL1
-
-      root {script2} -b -q
+    process_type: string-interpolated-cmd
+    cmd: "source {script1} {output_path} {input_file} {code}; root {script2} -b -q"
   environment:
     environment_type: localproc-env
   publisher:
