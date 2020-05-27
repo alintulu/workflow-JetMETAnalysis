@@ -9,15 +9,17 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-   if(argc != 2)
+   if(argc != 3)
    {
-      cerr << "Usage: " << argv[0] << " InputFileName" << endl;
+      cerr << "Usage: " << argv[0] << " InputFileName" << " BranchName" << endl;
       return -1;
    }
 
    TFile File(argv[1]);
 
-   TTree *Tree = (TTree *)File.Get("ak4pfchs/t");
+   const char * str = "/t";
+
+   TTree *Tree = (TTree *)File.Get(strcat(argv[2], str));
 
    long long run, lumi, evt;
    Tree->SetBranchAddress("run", &run);
