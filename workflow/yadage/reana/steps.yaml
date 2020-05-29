@@ -61,11 +61,31 @@ match_jets:
     script: | 
       source $HOME/helper/setup_cmssw.sh
       cp $HOME/JetMETAnalysis/workflow/HTCondor/Files/My*.root .
-      cp $HOME/helper/Step2PUMatching.sh .
       cp -r $HOME/JetMETAnalysis .
       scram b
-      source Step2PUMatching.sh $PWD {input_file} $PWD
-      cp output_ak4pf.root {output_path}/output_ak4pf.root
+
+      read -r NoPUFile PUFile <<<$(echo {input_file})
+
+      hadd -f -k NoPUFile.root `echo $NoPUFile | tr ':' ' '`
+      hadd -f -k PUFile.root `echo $PUFile | tr ':' ' '`
+
+      jet_synchtest_x \
+        -basepath $PWD \
+        -samplePU PUFile.root \
+        -sampleNoPU NoPUFile.root \
+        -algo1 ak4pf \
+        -algo2 ak4pf \
+        -iftest false \
+        -maxEvts 10000000 \
+        -ApplyJEC false \
+        -outputPath {output_path} \
+        -npvRhoNpuBinWidth 10 \
+        -NBinsNpvRhoNpu 6 \
+        -MCPUReWeighting MyMCPileupHistogram.root \
+        -DataPUReWeighting MyDataPileupHistogram.root \
+        -useweight true \
+        -nrefmax 3 \
+        -doNotSave false
   environment:
     environment_type: docker-encapsulated
     image: alintulu/slc6-cms
