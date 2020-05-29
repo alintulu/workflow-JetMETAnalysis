@@ -14,8 +14,9 @@ stages:
       parameters:
         lumi_file_PU: {stages: 'produce_ntuple[*].list_lumi_PU', output: lumi_file}
         lumi_file_noPU: {stages: 'produce_ntuple[*].list_lumi_noPU', output: lumi_file}
-        output_file: '{workdir}/MatchedFiles.yml'
-      step: {$ref: steps.yaml#/match_files}
+        output_file: '{workdir}/Matchedfiles.yml'
+      step: {$ref: steps.yaml#/match_lumi}
+        
 
   - name: match_jets
     dependencies: [match_lumi]

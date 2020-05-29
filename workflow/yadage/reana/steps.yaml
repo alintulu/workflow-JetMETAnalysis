@@ -28,25 +28,31 @@ list_lumi:
     publisher_type: interpolated-pub
     publish:
       lumi_file: '{output_file}'
-      
-match_files:
+
+match_lumi:
   process:
-    process_type: string-interpolated-cmd
-    cmd: "cp $HOME/helper/MatchFiles.cpp .; \
-      cp $HOME/helper/test.cpp .; \
-      cp $HOME/helper/makefile .; \
-      make RunMatchFiles; \
-      g++ test.cpp -o test; \
-      cat {lumi_file_noPU} {lumi_file_PU} | ./RunMatchFiles > MatchedFiles; \
-      echo 'MatchedFiles:' > {output_file}; \
-      ./test MatchedFiles >> {output_file}; \
-      echo {output_file};"
+    process_type: interpolated-script-cmd
+    interpreter: bash
+    script: |
+      source $HOME/helper/setup_cmssw.sh
+
+      cp $HOME/helper/MatchFiles.cpp .
+      cp $HOME/helper/test.cpp .
+      cp $HOME/helper/makefile .
+      make RunMatchFiles
+      g++ test.cpp -o test
+
+      cat {lumi_file_noPU} {lumi_file_PU} | ./RunMatchFiles > MatchedFiles
+      echo 'MatchedFiles:' > {output_file}
+      ./test MatchedFiles >> {output_file}
   publisher:
     publisher_type: fromyaml-pub
-    yamlfile: 'MatchedFiles.yml'
+    yamlfile: 'Matchedfiles.yml'
   environment:
     environment_type: docker-encapsulated
-    image: busybox
+    image: alintulu/slc6-cms
+    resources:
+      - CVMFS
 
 match_jets:
   process:
