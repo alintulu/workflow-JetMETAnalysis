@@ -4,7 +4,6 @@ stages:
     scheduler:
       scheduler_type: multistep-stage
       parameters:
-        script: {stages: init, output: script}
         input_file: {stages: init, output: input_file_PU, unwrap: true}
         output_file: '{workdir}/lumisections.txt'
       step: {$ref: 'steps.yaml#/list_lumi'}
@@ -17,7 +16,6 @@ stages:
     scheduler:
       scheduler_type: multistep-stage
       parameters:
-        script: {stages: init, output: script}
         input_file: {stages: init, output: input_file_noPU, unwrap: true}
         output_file: '{workdir}/lumisections.txt'
       step: {$ref: 'steps.yaml#/list_lumi'}
