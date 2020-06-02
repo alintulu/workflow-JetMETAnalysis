@@ -5,6 +5,7 @@ stages:
       parameters:
         input_file_PU: ["/home/cmsusr/input/JRA00.root", "/home/cmsusr/input/JRA0180.root"] 
         input_file_noPU: ["/home/cmsusr/input/JRA58.root", "/home/cmsusr/input/JRA99.root"]
+        algo: 'ak4pf'
       workflow: {$ref: workflow_ntuple.yaml}
 
   - name: match_lumi
@@ -17,7 +18,6 @@ stages:
         output_file: '{workdir}/Matchedfiles.yml'
       step: {$ref: steps.yaml#/match_lumi}
         
-
   - name: match_jets
     dependencies: [match_lumi]
     scheduler:
@@ -26,6 +26,8 @@ stages:
         output_path: '{workdir}'
         input_file: {stages: 'match_lumi', output: MatchedFiles, unwrap: true}
         output_file: '{workdir}/output_ak4pf.root'
+        algo1: 'ak4pf'
+        algo2: 'ak4pf'
       scatter:
         method: zip
         parameters: [input_file]
@@ -39,6 +41,9 @@ stages:
         input_file: {stages: 'match_jets', output: matched_file}
         output_path: '{workdir}'
         output_file: '{workdir}/ParallelMC_L1FastJet_AK4PF.txt'
+        algo1: 'ak4pf'
+        algo2: 'ak4pf'
+        era: 'ParallelMCPreDeriveL1'
       step: {$ref: steps.yaml#/compute_l1}
 
   - name: higher_level
@@ -62,6 +67,8 @@ stages:
         input_file: {stages: 'higher_level.[*].histogram', output: histo}
         output_path: '{workdir}'
         output_file: '{workdir}/ParallelMC_L2Relative_AK4PF.txt'
+        algs: 'ak4pf'
+        era: 'ParallelMC'
       step: {$ref: 'steps.yaml#/compute_l2l3'}
 
   - name: closure
@@ -74,6 +81,8 @@ stages:
         input_file: ["/home/cmsusr/input/JRA00.root", "/home/cmsusr/input/JRA0180.root"]
         output_path: '{workdir}'
         output_file: '{workdir}/Closure_ak4pf.root'
+        algs: 'ak4pf'
+        era: 'ParallelMC'
       batchsize: 2
       scatter:
         method: zip

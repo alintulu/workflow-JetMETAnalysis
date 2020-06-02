@@ -14,14 +14,15 @@ list_lumi:
     process_type: interpolated-script-cmd
     interpreter: zsh
     script: |
-      source $HOME/helper/setup_cmssw.sh
+      source $HOME/helper/setup_cmssw.sh CMSSW_10_2_5 slc6_amd64_gcc700
       cp $HOME/helper/ListRunLumi.cpp .
       cp $HOME/helper/makefile .
       make RunListRunLumi
-      ./RunListRunLumi {input_file} ak4pf > {output_file}
+      ./RunListRunLumi {input_file} {algo} > {output_file}
   environment:
     environment_type: docker-encapsulated
-    image: alintulu/slc6-cms
+    image: alintulu/jec
+    imagetag: slc6
     resources:
       - CVMFS
   publisher:
@@ -34,7 +35,7 @@ match_lumi:
     process_type: interpolated-script-cmd
     interpreter: bash
     script: |
-      source $HOME/helper/setup_cmssw.sh
+      source $HOME/helper/setup_cmssw.sh CMSSW_10_2_5 slc6_amd64_gcc700
 
       cp $HOME/helper/MatchFiles.cpp .
       cp $HOME/helper/test.cpp .
@@ -50,7 +51,8 @@ match_lumi:
     yamlfile: 'Matchedfiles.yml'
   environment:
     environment_type: docker-encapsulated
-    image: alintulu/slc6-cms
+    image: alintulu/jec
+    imagetag: slc6
     resources:
       - CVMFS
 
@@ -59,7 +61,7 @@ match_jets:
     process_type: interpolated-script-cmd
     interpreter: zsh
     script: | 
-      source $HOME/helper/setup_cmssw.sh
+      source $HOME/helper/setup_cmssw.sh CMSSW_10_2_5 slc6_amd64_gcc700
       cp $HOME/JetMETAnalysis/workflow/HTCondor/Files/My*.root .
       cp -r $HOME/JetMETAnalysis .
       scram b
@@ -73,8 +75,8 @@ match_jets:
         -basepath $PWD \
         -samplePU PUFile.root \
         -sampleNoPU NoPUFile.root \
-        -algo1 ak4pf \
-        -algo2 ak4pf \
+        -algo1 {algo1} \
+        -algo2 {algo2} \
         -iftest false \
         -maxEvts 10000000 \
         -ApplyJEC false \
@@ -88,7 +90,8 @@ match_jets:
         -doNotSave false
   environment:
     environment_type: docker-encapsulated
-    image: alintulu/slc6-cms
+    image: alintulu/jec
+    imagetag: slc6
     resources:
       - CVMFS
   publisher:
@@ -101,7 +104,7 @@ compute_l1:
     process_type: interpolated-script-cmd
     interpreter: zsh
     script: | 
-      source $HOME/helper/setup_cmssw.sh
+      source $HOME/helper/setup_cmssw.sh CMSSW_10_2_5 slc6_amd64_gcc700
       cp $HOME/JetMETAnalysis/workflow/HTCondor/Files/deriveL1.C .
       cp -r $HOME/JetMETAnalysis .
       scram b
@@ -111,18 +114,20 @@ compute_l1:
       jet_synchfit_x \
         -inputDir  $PWD \
         -outputDir $PWD \
-        -algo1 ak4pf \
-        -algo2 ak4pf \
+        -algo1 {algo1} \
+        -algo2 {algo2} \
         -highPU false \
         -useNPU false \
         -functionType standard \
-        -era ParallelMCPreDeriveL1
+        -era {era}
 
       root deriveL1.C -b -q
-      cp ParallelMC_L1FastJet_AK4PFchs.txt {output_path}/ParallelMC_L1FastJet_AK4PF.txt
+      cp *.root {output_path}
+      cp *.txt {output_path}
   environment:
     environment_type: docker-encapsulated
-    image: alintulu/slc6-cms
+    image: alintulu/jec
+    imagetag: slc6
     resources:
       - CVMFS
   publisher:
@@ -135,7 +140,7 @@ apply_l1:
     process_type: interpolated-script-cmd
     interpreter: zsh
     script: |
-      source $HOME/helper/setup_cmssw.sh
+      source $HOME/helper/setup_cmssw.sh CMSSW_10_2_5 slc6_amd64_gcc700
       cp {l1_corr} .
       cp -r $HOME/JetMETAnalysis .
       scram b
@@ -146,14 +151,15 @@ apply_l1:
         -input Input.root \
         -output {output_file} \
         -jecpath $PWD \
-        -era ParallelMC \
+        -era {era} \
         -levels 1 \
-        -algs ak4pf \
+        -algs {algs} \
         -L1FastJet true \
         -saveitree false
   environment:
     environment_type: docker-encapsulated
-    image: alintulu/slc6-cms
+    image: alintulu/jec
+    imagetag: slc6
     resources:
       - CVMFS
   publisher:
@@ -166,7 +172,7 @@ histogram:
     process_type: interpolated-script-cmd
     interpreter: zsh
     script: |
-      source $HOME/helper/setup_cmssw.sh
+      source $HOME/helper/setup_cmssw.sh CMSSW_10_2_5 slc6_amd64_gcc700
       cp $HOME/JetMETAnalysis/workflow/HTCondor/Files/My*.root .
       cp $HOME/JetMETAnalysis/JetAnalyzers/config/jra_dr_finebinning.config jra.config
       cp -r $HOME/JetMETAnalysis .
@@ -187,12 +193,13 @@ histogram:
         -output {output_file} \
         -useweight true \
         -nrefmax 3 \
-        -algs ak4pfl1:0.2 \
+        -algs {algs}l1:0.2 \
         -relrspmin 0.0 \
         -relrspmax 2.0
   environment:
     environment_type: docker-encapsulated
-    image: alintulu/slc6-cms
+    image: alintulu/jec
+    imagetag: slc6
     resources:
       - CVMFS
   publisher:
@@ -205,15 +212,15 @@ compute_l2l3:
     process_type: interpolated-script-cmd
     interpreter: zsh
     script: |
-      source $HOME/helper/setup_cmssw.sh
+      source $HOME/helper/setup_cmssw.sh CMSSW_10_2_5 slc6_amd64_gcc700
       cp -r $HOME/JetMETAnalysis .
       scram b
       hadd -k -f Merged.root {input_file}
 
       jet_l2_correction_x \
         -input Merged.root \
-        -algs ak4pfl1 \
-        -era ParallelMC \
+        -algs {algs}l1 \
+        -era {era} \
         -output l2.root \
         -outputDir {output_path}/ \
         -makeCanvasVariable AbsCorVsJetPt:JetEta \
@@ -226,10 +233,11 @@ compute_l2l3:
         -l2pffit splineAkima \
         -ptclip 20
 
-      cp {output_path}/ParallelMC_L2Relative_AK4PFl1.txt {output_path}/ParallelMC_L2Relative_AK4PF.txt
+      cp {output_path}/{era}_L2Relative_AK4PFl1.txt {output_path}/{era}_L2Relative_AK4PF.txt
   environment:
     environment_type: docker-encapsulated
-    image: alintulu/slc6-cms
+    image: alintulu/jec
+    imagetag: slc6
     resources:
       - CVMFS
   publisher:
@@ -242,7 +250,7 @@ closure:
     process_type: interpolated-script-cmd
     interpreter: zsh
     script: |
-      source $HOME/helper/setup_cmssw.sh
+      source $HOME/helper/setup_cmssw.sh CMSSW_10_2_5 slc6_amd64_gcc700
       cp {l1_corr} .
       cp {l2l3_corr} .
       cp $HOME/JetMETAnalysis/workflow/HTCondor/Files/My*.root .
@@ -255,10 +263,10 @@ closure:
         -inputFilename Merged.root \
         -outputDir {output_path}/ \
         -path $PWD/ \
-        -era ParallelMC \
+        -era {era} \
         -levels 1 2 \
         -useweight true \
-        -algs ak4pf \
+        -algs {algs} \
         -drmax 0.2 \
         -evtmax 0 \
         -nbinsrelrsp 200 \
@@ -269,7 +277,8 @@ closure:
         -nrefmax 3
   environment:
     environment_type: docker-encapsulated
-    image: alintulu/slc6-cms
+    image: alintulu/jec
+    imagetag: slc6
     resources:
       - CVMFS
   publisher:
@@ -282,7 +291,7 @@ plot_closure:
     process_type: interpolated-script-cmd
     interpreter: zsh
     script: |
-      source $HOME/helper/setup_cmssw.sh
+      source $HOME/helper/setup_cmssw.sh CMSSW_10_2_5 slc6_amd64_gcc700
       cp -r $HOME/JetMETAnalysis .
       scram b
       
@@ -300,7 +309,8 @@ plot_closure:
         -doRatioEta false
   environment:
     environment_type: docker-encapsulated
-    image: alintulu/slc6-cms
+    image: alintulu/jec
+    imagetag: slc6
     resources:
       - CVMFS
   publisher:
