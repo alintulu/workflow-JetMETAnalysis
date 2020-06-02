@@ -10,6 +10,8 @@ CodeDir=$4
 hadd -f -k NoPUFile.root `echo $NoPUFile | tr ':' ' '`
 hadd -f -k PUFile.root `echo $PUFile | tr ':' ' '`
 
+cd $CodeDir
+
 jet_synchtest_x \
    -basepath $WorkDir \
    -samplePU PUFile.root \

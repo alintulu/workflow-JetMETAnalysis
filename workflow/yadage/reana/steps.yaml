@@ -18,13 +18,12 @@ list_lumi:
       cp $HOME/helper/ListRunLumi.cpp .
       cp $HOME/helper/makefile .
       make RunListRunLumi
+
       ./RunListRunLumi {input_file} {algo} > {output_file}
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: slc6
-    resources:
-      - CVMFS
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -36,7 +35,6 @@ match_lumi:
     interpreter: bash
     script: |
       source $HOME/helper/setup_cmssw.sh CMSSW_10_2_5 slc6_amd64_gcc700
-
       cp $HOME/helper/MatchFiles.cpp .
       cp $HOME/helper/test.cpp .
       cp $HOME/helper/makefile .
@@ -53,8 +51,6 @@ match_lumi:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: slc6
-    resources:
-      - CVMFS
 
 match_jets:
   process:
@@ -92,8 +88,6 @@ match_jets:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: slc6
-    resources:
-      - CVMFS
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -128,8 +122,6 @@ compute_l1:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: slc6
-    resources:
-      - CVMFS
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -160,8 +152,6 @@ apply_l1:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: slc6
-    resources:
-      - CVMFS
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -200,8 +190,6 @@ histogram:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: slc6
-    resources:
-      - CVMFS
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -215,6 +203,7 @@ compute_l2l3:
       source $HOME/helper/setup_cmssw.sh CMSSW_10_2_5 slc6_amd64_gcc700
       cp -r $HOME/JetMETAnalysis .
       scram b
+      
       hadd -k -f Merged.root {input_file}
 
       jet_l2_correction_x \
@@ -238,8 +227,6 @@ compute_l2l3:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: slc6
-    resources:
-      - CVMFS
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -279,8 +266,6 @@ closure:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: slc6
-    resources:
-      - CVMFS
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -311,8 +296,6 @@ plot_closure:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: slc6
-    resources:
-      - CVMFS
   publisher:
     publisher_type: interpolated-pub
     publish:

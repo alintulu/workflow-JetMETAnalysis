@@ -13,7 +13,13 @@ using namespace std;
 
 void deriveL1() {
 
-  string algo = "ak4pf";
+  if(argc != 2)
+  {
+    cerr << "Usage: " << argv[0] << " BranchName" << endl;
+    return -1;
+  }
+  
+  string algo = argv[1];
   bool batch = true;//false;
 
   bool fixpar2 = false;//false;

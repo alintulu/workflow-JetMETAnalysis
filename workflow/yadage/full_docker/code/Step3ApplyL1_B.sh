@@ -8,6 +8,8 @@ CodeDir=$3
 
 #hadd -k -f Input.root `echo $Files | tr ':' ' '`
 
+cd $CodeDir
+
 jet_response_analyzer_x jra.config \
    -input $Files \
    -nbinsabsrsp 0 \

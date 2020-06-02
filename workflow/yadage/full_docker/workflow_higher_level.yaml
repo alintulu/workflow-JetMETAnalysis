@@ -1,0 +1,24 @@
+stages:
+  - name: apply_l1
+    dependencies: [init]
+    scheduler:
+      scheduler_type: singlestep-stage
+      parameters:
+        l1_corr: {stages: init, output: l1_corr, unwrap: true}
+        input_file: {stages: init, output: input_file}
+        output_path: '{workdir}'
+        output_file: '{workdir}/JRA_jecl1.root'
+        algs: 'ak4pf'
+        era: 'ParallelMC'
+      step: {$ref: 'steps.yaml#/apply_l1'}
+
+  - name: histogram
+    dependencies: [apply_l1]
+    scheduler:
+      scheduler_type: singlestep-stage
+      parameters:
+        input_file: {stages: apply_l1, output: applied_l1}
+        output_path: '{workdir}'
+        output_file: '{workdir}/jra_jecl1.root'
+        algs: 'ak4pf'
+      step: {$ref: 'steps.yaml#/histogram'}
