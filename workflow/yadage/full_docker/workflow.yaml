@@ -68,6 +68,7 @@ stages:
         output_path: '{workdir}'
         output_file: '{workdir}/ParallelMC_L2Relative_AK4PF.txt'
         algs: 'ak4pf'
+        algsCAP: 'AK4PF'
         era: 'ParallelMC'
       step: {$ref: 'steps.yaml#/compute_l2l3'}
 
