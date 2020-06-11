@@ -85,7 +85,7 @@ match_jets:
         -nrefmax 3 \
         -doNotSave false
     
-    cp PU_dist_mc.root {output_path}
+      cp PU_dist_mc.root {output_path}
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
