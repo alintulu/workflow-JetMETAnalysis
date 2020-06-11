@@ -60,6 +60,7 @@ match_jets:
     interpreter: zsh
     script: | 
       source $HOME/helper/setup_cmssw.sh {release} {scram_arch}
+      cp $HOME/JetMETAnalysis/workflow/HTCondor/Files/My*.root .
       cp $HOME/helper/makeMCPileupHist.py .
       python makeMCPileupHist.py SimGeneral.MixingModule.mix_{mix_conf_mc}_cfi --outputFilename {PU_dist_mc}
 
@@ -86,7 +87,7 @@ match_jets:
         -npvRhoNpuBinWidth 10 \
         -NBinsNpvRhoNpu 6 \
         -MCPUReWeighting {PU_dist_mc} \
-        -DataPUReWeighting {PU_dist_data} \
+        -DataPUReWeighting `pwd`/MyDataPileupHistogram.root \
         -useweight true \
         -nrefmax 3 \
         -doNotSave false
@@ -178,6 +179,7 @@ histogram:
     interpreter: zsh
     script: |
       source $HOME/helper/setup_cmssw.sh {release} {scram_arch}
+      cp $HOME/JetMETAnalysis/workflow/HTCondor/Files/My*.root .
       cp $HOME/JetMETAnalysis/JetAnalyzers/config/jra_dr_finebinning.config jra.config
       cp -r $HOME/JetMETAnalysis .
       scram b
@@ -194,7 +196,7 @@ histogram:
         -flavorDefinition phys \
         -MCPUReWeighting {PU_dist_mc} \
         -MCPUHistoName pileup \
-        -DataPUReWeighting {PU_dist_data} \
+        -DataPUReWeighting MyDataPileupHistogram.root \
         -DataPUHistoName pileup \
         -output {output_file} \
         -useweight true \
@@ -258,6 +260,7 @@ closure:
     interpreter: zsh
     script: |
       source $HOME/helper/setup_cmssw.sh {release} {scram_arch}
+      cp $HOME/JetMETAnalysis/workflow/HTCondor/Files/My*.root .
       cp {l1_corr} .
       cp {l2l3_corr} .
       cp -r $HOME/JetMETAnalysis .
@@ -281,7 +284,7 @@ closure:
         -relrspmin 0.0 \
         -relrspmax 2.0 \
         -MCPUReWeighting {PU_dist_mc} \
-        -DataPUReWeighting {PU_dist_data} \
+        -DataPUReWeighting MyDataPileupHistogram.root \
         -nrefmax 3
   environment:
     environment_type: docker-encapsulated
