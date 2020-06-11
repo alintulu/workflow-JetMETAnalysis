@@ -137,7 +137,7 @@ apply_l1:
     interpreter: zsh
     script: |
       source $HOME/helper/setup_cmssw.sh {release} {scram_arch}
-      cp {l1_corr} .
+      cp {l1_corr} ParallelMC_L1FastJet_AK4PFchs.txt
       cp -r $HOME/JetMETAnalysis .
       scram b
 
@@ -240,7 +240,7 @@ closure:
     interpreter: zsh
     script: |
       source $HOME/helper/setup_cmssw.sh {release} {scram_arch}
-      cp {l1_corr} .
+      cp {l1_corr} ParallelMC_L1FastJet_AK4PFchs.txt
       cp {l2l3_corr} .
       cp -r $HOME/JetMETAnalysis .
       scram b
