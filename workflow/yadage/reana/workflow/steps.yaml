@@ -99,7 +99,7 @@ compute_l1:
     interpreter: zsh
     script: | 
       source $HOME/helper/setup_cmssw.sh CMSSW_10_2_5 slc6_amd64_gcc700
-      cp $HOME/JetMETAnalysis/workflow/HTCondor/Files/deriveL1_old.C deriveL1.C
+      cp $HOME/JetMETAnalysis/workflow/HTCondor/Files/deriveL1.C .
       cp -r $HOME/JetMETAnalysis .
       scram b
 
