@@ -230,7 +230,7 @@ compute_l2l3:
         -l2pffit splineAkima \
         -ptclip 20
 
-      cp {output_path}/{era}_L2Relative_{algsCAP}l1.txt {output_path}/{era}_L2Relative_{algsCAP}.txt
+      cp {output_path}/*.txt {output_path}/ParallelMC_L2Relative_AK4PFchs.txt
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec

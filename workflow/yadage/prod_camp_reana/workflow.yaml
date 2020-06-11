@@ -87,7 +87,7 @@ stages:
         release: 'CMSSW_10_6_12'
         scram_arch: 'slc7_amd64_gcc700'
         output_path: '{workdir}'
-        output_file: '{workdir}/ParallelMC_L2Relative_AK4PFCHS.txt'
+        output_file: '{workdir}/ParallelMC_L2Relative_AK4PFchs.txt'
       step: {$ref: 'steps.yaml#/compute_l2l3'}
 
   - name: closure
