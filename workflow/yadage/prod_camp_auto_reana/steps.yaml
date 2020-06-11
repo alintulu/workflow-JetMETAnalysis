@@ -74,9 +74,9 @@ match_jets:
       algorithm=$(echo {algo}{cone_size}{jet_type} | tr '[:upper:]' '[:lower:]')
 
       jet_synchtest_x \
-        -basepath $PWD \
-        -samplePU PUFile.root \
-        -sampleNoPU NoPUFile.root \
+        -basepath '//' \
+        -samplePU `pwd`/PUFile.root \
+        -sampleNoPU `pwd`/NoPUFile.root \
         -algo1 $algorithm \
         -algo2 $algorithm \
         -iftest false \
