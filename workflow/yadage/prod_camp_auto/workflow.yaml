@@ -72,6 +72,7 @@ stages:
         jet_type: 'PFchs'
         input_file: ["/home/cmsusr/input/JRA235.root", "/home/cmsusr/input/JRA173.root"]
         PU_dist_data: '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions18/13TeV/PileUp/PileupHistogram-goldenJSON-13tev-2018-69200ub.root'
+        PU_dist_mc: {stages: 'match_jets', output: PU_dist_mc}
         release: 'CMSSW_10_6_12'
         scram_arch: 'slc7_amd64_gcc700'
       batchsize: 2
@@ -111,6 +112,7 @@ stages:
         release: 'CMSSW_10_6_12'
         scram_arch: 'slc7_amd64_gcc700'
         PU_dist_data: '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions18/13TeV/PileUp/PileupHistogram-goldenJSON-13tev-2018-69200ub.root'
+        PU_dist_mc: {stages: 'match_jets', output: PU_dist_mc}
         output_path: '{workdir}'
         output_file: '{workdir}/Closure_ak4pfchs.root'
       batchsize: 2
