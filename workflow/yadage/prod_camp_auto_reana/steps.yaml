@@ -129,7 +129,7 @@ compute_l1:
         -functionType standard \
         -era {era}
 
-      root -b -q -l 'deriveL1.C+("{algo1}")'
+      root -b -q -l `printf "deriveL1.C+(\"$algorithm\")"`
       cp *.txt {output_path}
       cp *.root {output_path}
       cp *.pdf {output_path}
