@@ -23,6 +23,8 @@ list_lumi:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-test
+    resources:
+      - kerberos: true
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -90,6 +92,8 @@ match_jets:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-test
+    resources:
+      - kerberos: true
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -193,6 +197,8 @@ histogram:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-test
+    resources:
+      - kerberos: true
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -267,6 +273,8 @@ closure:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-test
+    resources:
+      - kerberos: true
   publisher:
     publisher_type: interpolated-pub
     publish:
