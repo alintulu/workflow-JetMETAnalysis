@@ -3,8 +3,8 @@ stages:
     scheduler:
       scheduler_type: singlestep-stage
       parameters:
-        input_file_PU: ["/home/cmsusr/input/JRA235.root", "/home/cmsusr/input/JRA173.root"] 
-        input_file_noPU: ["/home/cmsusr/input/JRA109.root", "/home/cmsusr/input/JRA72.root", "/home/cmsusr/input/JRA86.root"]
+        input_file_PU: ["/eos/user/a/adlintul/JRA2019/backup/PU/JRA235.root", "/eos/user/a/adlintul/JRA2019/backup/PU/JRA173.root"] 
+        input_file_noPU: ["/eos/user/a/adlintul/JRA2019/noPU/JRA109.root", "/eos/user/a/adlintul/JRA2019/noPU/JRA72.root", "/eos/user/a/adlintul/JRA2019/noPU/JRA86.root"]
         algo: 'AK'
         cone_size: '4'
         jet_type: 'PFchs'
@@ -54,11 +54,11 @@ stages:
         algo: 'AK'
         cone_size: '4'
         jet_type: 'PFchs'
-        era: 'ParallelMCPreDeriveL1'
+        era: 'ParallelMC'
         release: 'CMSSW_10_6_12'
         scram_arch: 'slc7_amd64_gcc700'
         output_path: '{workdir}'
-        output_file: '{workdir}/ParallelMC_L1FastJet_AK4PFCHS.txt'
+        output_file: '{workdir}/ParallelMC_L1FastJet_AK4PFchs.txt'
       step: {$ref: steps.yaml#/compute_l1}
 
   - name: higher_level
@@ -70,7 +70,7 @@ stages:
         algo: 'AK'
         cone_size: '4'
         jet_type: 'PFchs'
-        input_file: ["/home/cmsusr/input/JRA235.root", "/home/cmsusr/input/JRA173.root"]
+        input_file: ["/eos/user/a/adlintul/JRA2019/backup/PU/JRA235.root", "/eos/user/a/adlintul/JRA2019/backup/PU/JRA173.root"]
         PU_dist_data: '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions18/13TeV/PileUp/PileupHistogram-goldenJSON-13tev-2018-69200ub.root'
         PU_dist_mc: {stages: 'match_jets', output: PU_dist_mc}
         release: 'CMSSW_10_6_12'
@@ -104,7 +104,7 @@ stages:
       parameters:
         l1_corr: {stages: 'compute_l1', output: l1_corr}
         l2l3_corr: {stages: 'compute_l2l3', output: l2l3_corr}
-        input_file: ["/home/cmsusr/input/JRA235.root", "/home/cmsusr/input/JRA173.root"]
+        input_file: ["/eos/user/a/adlintul/JRA2019/backup/PU/JRA235.root", "/eos/user/a/adlintul/JRA2019/backup/PU/JRA173.root"]
         algo: 'AK'
         cone_size: '4'
         jet_type: 'PFchs'

@@ -5,7 +5,7 @@ stages:
       scheduler_type: singlestep-stage
       parameters:
         l1_corr: {stages: init, output: l1_corr, unwrap: true}
-        input_file: {stages: init, output: input_file}
+        input_file: {stages: init, output: input_file, unwrap: true}
         algo: {stages: init, output: algo}
         cone_size: {stages: init, output: cone_size}
         jet_type: {stages: init, output: jet_type}
