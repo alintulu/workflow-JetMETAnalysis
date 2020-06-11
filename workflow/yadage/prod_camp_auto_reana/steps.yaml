@@ -168,6 +168,8 @@ apply_l1:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-test-latest
+    resources:
+      - kerberos: true
   publisher:
     publisher_type: interpolated-pub
     publish:
