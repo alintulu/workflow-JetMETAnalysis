@@ -34,7 +34,7 @@ stages:
       step: {$ref: steps.yaml#/match_jets}
 
   - name: compute_l1
-    dependencies: [match_jets]
+    dependencies: [match_jetss]
     scheduler:
       scheduler_type: singlestep-stage
       parameters:

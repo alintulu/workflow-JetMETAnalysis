@@ -1,0 +1,26 @@
+stages:
+  - name: list_lumi_PU
+    dependencies: [init]
+    scheduler:
+      scheduler_type: multistep-stage
+      parameters:
+        input_file: {stages: init, output: input_file_PU, unwrap: true}
+        algo: {stages: init, output: algo}
+        output_file: '{workdir}/lumisections.txt'
+      step: {$ref: 'steps.yaml#/list_lumi'}
+      scatter:
+         method: zip
+         parameters: [input_file]
+
+  - name: list_lumi_noPU
+    dependencies: [init]
+    scheduler:
+      scheduler_type: multistep-stage
+      parameters:
+        input_file: {stages: init, output: input_file_noPU, unwrap: true}
+        algo: {stages: init, output: algo}
+        output_file: '{workdir}/lumisections.txt'
+      step: {$ref: 'steps.yaml#/list_lumi'}
+      scatter:
+         method: zip
+         parameters: [input_file]
