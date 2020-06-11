@@ -3,8 +3,8 @@ stages:
     scheduler:
       scheduler_type: singlestep-stage
       parameters:
-        input_file_PU: ["/home/cmsusr/input/JRA235.root", "/home/cmsusr/input/JRA173.root"] 
-        input_file_noPU: ["/home/cmsusr/input/JRA109.root", "/home/cmsusr/input/JRA72.root", "/home/cmsusr/input/JRA86.root"]
+        input_file_PU: ["/eos/user/a/adlintul/JRA2019/backup/PU/JRA235.root", "/eos/user/a/adlintul/JRA2019/backup/PU/JRA173.root"] 
+        input_file_noPU: ["/eos/user/a/adlintul/JRA2019/noPU/JRA109.root", "/eos/user/a/adlintul/JRA2019/noPU/JRA72.root", "/eos/user/a/adlintul/JRA2019/noPU/JRA86.root"]
         algo: 'ak4pfchs'
         release: 'CMSSW_10_6_12'
         scram_arch: 'slc7_amd64_gcc700'
@@ -64,7 +64,7 @@ stages:
       parameters:
         l1_corr: {stages: 'compute_l1', output: l1_corr}
         algs: 'ak4pfchs'
-        input_file: ["/home/cmsusr/input/JRA235.root", "/home/cmsusr/input/JRA173.root"]
+        input_file: ["/eos/user/a/adlintul/JRA2019/backup/PU/JRA235.root", "/eos/user/a/adlintul/JRA2019/backup/PU/JRA173.root"]
         PU_dist_data: '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions18/13TeV/PileUp/PileupHistogram-goldenJSON-13tev-2018-69200ub.root'
         PU_dist_mc: {stages: 'match_jets', output: PU_dist_mc}
         release: 'CMSSW_10_6_12'
@@ -97,7 +97,7 @@ stages:
       parameters:
         l1_corr: {stages: 'compute_l1', output: l1_corr}
         l2l3_corr: {stages: 'compute_l2l3', output: l2l3_corr}
-        input_file: ["/home/cmsusr/input/JRA235.root", "/home/cmsusr/input/JRA173.root"]
+        input_file: ["/eos/user/a/adlintul/JRA2019/backup/PU/JRA235.root", "/eos/user/a/adlintul/JRA2019/backup/PU/JRA173.root"]
         algs: 'ak4pfchs'
         era: 'ParallelMC'
         release: 'CMSSW_10_6_12'
