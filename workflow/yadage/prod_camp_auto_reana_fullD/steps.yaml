@@ -1,0 +1,330 @@
+ntuple:
+  process:
+    process_type: string-interpolated-cmd
+    cmd: echo "Input files; {input_file} \n GT; {global_tag}" > {output_file}
+  environment:
+    environment_type: localproc-env
+  publisher:
+    publisher_type: interpolated-pub
+    publish:
+      ntuple_file: '{output_file}'
+
+list_lumi:
+  process:
+    process_type: interpolated-script-cmd
+    interpreter: zsh
+    script: |
+      source $HOME/helper/setup_cmssw.sh {release} {scram_arch}
+      cp $HOME/helper/ListRunLumi.cpp .
+      cp $HOME/helper/makefile .
+      make RunListRunLumi
+
+      algorithm=$(echo {algo}{cone_size}{jet_type} | tr '[:upper:]' '[:lower:]')
+      ./RunListRunLumi {input_file} $algorithm > {output_file}
+  environment:
+    environment_type: docker-encapsulated
+    image: alintulu/jec
+    imagetag: cc7-reana
+    resources:
+      - kerberos: true
+  publisher:
+    publisher_type: interpolated-pub
+    publish:
+      lumi_file: '{output_file}'
+
+match_lumi:
+  process:
+    process_type: interpolated-script-cmd
+    interpreter: bash
+    script: |
+      source $HOME/helper/setup_cmssw.sh {release} {scram_arch}
+      cp $HOME/helper/MatchFiles.cpp .
+      cp $HOME/helper/PrepareMatching.cpp .
+      cp $HOME/helper/makefile .
+      make RunMatchFiles RunPrepareMatching
+
+      cat {lumi_file_noPU} {lumi_file_PU} | ./RunMatchFiles > MatchedFiles
+      echo 'MatchedFiles:' > {output_file}
+      ./RunPrepareMatching MatchedFiles 10 >> {output_file}
+  publisher:
+    publisher_type: fromyaml-pub
+    yamlfile: 'Matchedfiles.yml'
+  environment:
+    environment_type: docker-encapsulated
+    image: alintulu/jec
+    imagetag: cc7-reana
+
+match_jets:
+  process:
+    process_type: interpolated-script-cmd
+    interpreter: zsh
+    script: | 
+      source $HOME/helper/setup_cmssw.sh {release} {scram_arch}
+      cp $HOME/helper/makeMCPileupHist.py .
+      python makeMCPileupHist.py SimGeneral.MixingModule.mix_{mix_conf_mc}_cfi --outputFilename {PU_dist_mc}
+
+      cp -r $HOME/JetMETAnalysis .
+      scram b
+
+      read -r NoPUFile PUFile <<<$(echo {input_file})
+
+      hadd -f -k NoPUFile.root `echo $NoPUFile | tr ':' ' '`
+      hadd -f -k PUFile.root `echo $PUFile | tr ':' ' '`
+
+      algorithm=$(echo {algo}{cone_size}{jet_type} | tr '[:upper:]' '[:lower:]')
+
+      jet_synchtest_x \
+        -basepath '//' \
+        -samplePU `pwd`/PUFile.root \
+        -sampleNoPU `pwd`/NoPUFile.root \
+        -algo1 $algorithm \
+        -algo2 $algorithm \
+        -iftest false \
+        -maxEvts 10000000 \
+        -ApplyJEC false \
+        -outputPath {output_path} \
+        -npvRhoNpuBinWidth 10 \
+        -NBinsNpvRhoNpu 6 \
+        -MCPUReWeighting {PU_dist_mc} \
+        -DataPUReWeighting {PU_dist_data} \
+        -useweight true \
+        -nrefmax 3 \
+        -doNotSave false
+  environment:
+    environment_type: docker-encapsulated
+    image: alintulu/jec
+    imagetag: cc7-reana
+    resources:
+      - kerberos: true
+  publisher:
+    publisher_type: interpolated-pub
+    publish:
+      matched_file: '{output_file}'
+      PU_dist_mc: '{PU_dist_mc}'
+
+compute_l1:
+  process:
+    process_type: interpolated-script-cmd
+    interpreter: zsh
+    script: | 
+      source $HOME/helper/setup_cmssw.sh {release} {scram_arch}
+      cp $HOME/helper/deriveL1.C .
+      cp -r $HOME/JetMETAnalysis .
+      scram b
+
+      algorithm=$(echo {algo}{cone_size}{jet_type} | tr '[:upper:]' '[:lower:]')
+      merge=output_$(echo {algo}{cone_size}{jet_type} | tr '[:upper:]' '[:lower:]').root
+
+      hadd -k -f $merge {input_file}
+
+      jet_synchfit_x \
+        -inputDir  $PWD \
+        -outputDir $PWD \
+        -algo1 $algorithm \
+        -algo2 $algorithm \
+        -highPU false \
+        -useNPU false \
+        -functionType standard \
+        -era {era}
+
+      root -b -q -l `printf "deriveL1.C+(\"$algorithm\",\"{algo}{cone_size}{jet_type}\",\"{era}\")"`
+      cp *.txt {output_path}
+      cp *.root {output_path}
+      cp *.pdf {output_path}
+  environment:
+    environment_type: docker-encapsulated
+    image: alintulu/jec
+    imagetag: cc7-reana
+  publisher:
+    publisher_type: interpolated-pub
+    publish:
+      l1_corr: '{output_file}'
+
+apply_l1:
+  process:
+    process_type: interpolated-script-cmd
+    interpreter: zsh
+    script: |
+      source $HOME/helper/setup_cmssw.sh {release} {scram_arch}
+      cp {l1_corr} .
+      cp -r $HOME/JetMETAnalysis .
+      scram b
+
+      hadd -k -f Input.root {input_file}
+
+      algorithm=$(echo {algo}{cone_size}{jet_type} | tr '[:upper:]' '[:lower:]')
+
+      jet_apply_jec_x \
+        -input Input.root \
+        -output {output_file} \
+        -jecpath $PWD \
+        -era {era} \
+        -levels 1 \
+        -algs $algorithm \
+        -L1FastJet true \
+        -saveitree false
+  environment:
+    environment_type: docker-encapsulated
+    image: alintulu/jec
+    imagetag: cc7-reana
+    resources:
+      - kerberos: true
+  publisher:
+    publisher_type: interpolated-pub
+    publish:
+      applied_l1: '{output_file}'
+
+histogram:
+  process:
+    process_type: interpolated-script-cmd
+    interpreter: zsh
+    script: |
+      source $HOME/helper/setup_cmssw.sh {release} {scram_arch}
+      cp $HOME/JetMETAnalysis/JetAnalyzers/config/jra_dr_finebinning.config jra.config
+      cp -r $HOME/JetMETAnalysis .
+      scram b
+
+      algorithm=$(echo {algo}{cone_size}{jet_type} | tr '[:upper:]' '[:lower:]')l1:0.2
+
+      jet_response_analyzer_x jra.config \
+        -input {input_file} \
+        -nbinsabsrsp 0 \
+        -nbinsetarsp 0 \
+        -nbinsphirsp 0 \
+        -nbinsrelrsp 200 \
+        -doflavor false \
+        -flavorDefinition phys \
+        -MCPUReWeighting {PU_dist_mc} \
+        -MCPUHistoName pileup \
+        -DataPUReWeighting {PU_dist_data} \
+        -DataPUHistoName pileup \
+        -output {output_file} \
+        -useweight true \
+        -nrefmax 3 \
+        -algs $algorithm \
+        -relrspmin 0.0 \
+        -relrspmax 2.0
+  environment:
+    environment_type: docker-encapsulated
+    image: alintulu/jec
+    imagetag: cc7-reana
+    resources:
+      - kerberos: true
+  publisher:
+    publisher_type: interpolated-pub
+    publish:
+      histo: '{output_file}'
+
+compute_l2l3:
+  process:
+    process_type: interpolated-script-cmd
+    interpreter: zsh
+    script: |
+      source $HOME/helper/setup_cmssw.sh {release} {scram_arch}
+      cp -r $HOME/JetMETAnalysis .
+      scram b
+
+      hadd -k -f Merged.root {input_file}
+
+      algorithm=$(echo {algo}{cone_size}{jet_type} | tr '[:upper:]' '[:lower:]')l1
+
+      jet_l2_correction_x \
+        -input Merged.root \
+        -algs $algorithm \
+        -era {era} \
+        -output l2.root \
+        -outputDir {output_path}/ \
+        -makeCanvasVariable AbsCorVsJetPt:JetEta \
+        -l2l3 true \
+        -batch true \
+        -histMet median \
+        -delphes false \
+        -maxFitIter 30 \
+        -l2calofit DynamicMin \
+        -l2pffit splineAkima \
+        -ptclip 20
+
+      cp {output_path}/*.txt {output_path}/{era}_L2Relative_{algo}{cone_size}{jet_type}.txt
+  environment:
+    environment_type: docker-encapsulated
+    image: alintulu/jec
+    imagetag: cc7-reana
+  publisher:
+    publisher_type: interpolated-pub
+    publish:
+      l2l3_corr: '{output_file}'
+
+closure:
+  process:
+    process_type: interpolated-script-cmd
+    interpreter: zsh
+    script: |
+      source $HOME/helper/setup_cmssw.sh {release} {scram_arch}
+      cp {l1_corr} .
+      cp {l2l3_corr} .
+      cp -r $HOME/JetMETAnalysis .
+      scram b
+
+      hadd -k -f Merged.root {input_file}
+
+      algorithm=$(echo {algo}{cone_size}{jet_type} | tr '[:upper:]' '[:lower:]')
+
+      jet_correction_analyzer_x \
+        -inputFilename Merged.root \
+        -outputDir {output_path}/ \
+        -path $PWD/ \
+        -era {era} \
+        -levels 1 2 \
+        -useweight true \
+        -algs $algorithm \
+        -drmax 0.2 \
+        -evtmax 0 \
+        -nbinsrelrsp 200 \
+        -relrspmin 0.0 \
+        -relrspmax 2.0 \
+        -MCPUReWeighting {PU_dist_mc} \
+        -DataPUReWeighting {PU_dist_data} \
+        -nrefmax 3
+  environment:
+    environment_type: docker-encapsulated
+    image: alintulu/jec
+    imagetag: cc7-reana
+    resources:
+      - kerberos: true
+  publisher:
+    publisher_type: interpolated-pub
+    publish:
+      closure: '{output_file}'
+
+plot_closure:
+  process:
+    process_type: interpolated-script-cmd
+    interpreter: zsh
+    script: |
+      mkdir -p {output_path}
+      source $HOME/helper/setup_cmssw.sh {release} {scram_arch}
+      cp -r $HOME/JetMETAnalysis .
+      scram b
+      
+      hadd -k -f Merged.root {input_file}
+
+      jet_draw_closure_x \
+        -doPt true \
+        -doEta true \
+        -path $PWD \
+        -filename Merged \
+        -histMet median \
+        -outputDir {output_path} \
+        -draw_guidelines true \
+        -doRatioPt false \
+        -doRatioEta false
+  environment:
+    environment_type: docker-encapsulated
+    image: alintulu/jec
+    imagetag: cc7-reana
+    resources:
+      - kerberos: true
+  publisher:
+    publisher_type: interpolated-pub
+    publish:
+      closure: '{output_file}'
