@@ -11,7 +11,7 @@ stages:
         release: {stages: init, output: release, unwrap: true}
         scram_arch: {stages: init, output: scram_arch, unwrap: true}
         output_file: '{workdir}/lumisections.txt'
-      batchsize: 10
+      batchsize: 20
       step: {$ref: 'steps.yaml#/list_lumi'}
       scatter:
          method: zip
