@@ -9,6 +9,20 @@ ntuple:
     publish:
       ntuple_file: '{output_file}'
 
+temp:
+  process:
+    process_type: interpolated-script-cmd
+    interpreter: bash
+    script: |
+      cp $HOME/helper/PU_files.yaml {output_file}
+  publisher:
+    publisher_type: fromyaml-pub
+    yamlfile: 'PU_files.yml'
+  environment:
+    environment_type: docker-encapsulated
+    image: alintulu/jec
+    imagetag: cc7-reana
+
 list_lumi:
   process:
     process_type: interpolated-script-cmd
