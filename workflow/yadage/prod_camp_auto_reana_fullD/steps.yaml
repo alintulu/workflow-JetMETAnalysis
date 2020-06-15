@@ -21,7 +21,7 @@ temp:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana
+    imagetag: cc7-reana-v1
 
 list_lumi:
   process:
@@ -41,7 +41,7 @@ list_lumi:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana
+    imagetag: cc7-reana-v1
     resources:
       - kerberos: true
   publisher:
@@ -69,7 +69,7 @@ match_lumi:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana
+    imagetag: cc7-reana-v1
 
 match_jets:
   process:
@@ -110,7 +110,7 @@ match_jets:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana
+    imagetag: cc7-reana-v1
     resources:
       - kerberos: true
   publisher:
@@ -151,7 +151,7 @@ compute_l1:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana
+    imagetag: cc7-reana-v1
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -183,7 +183,7 @@ apply_l1:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana
+    imagetag: cc7-reana-v1
     resources:
       - kerberos: true
   publisher:
@@ -224,7 +224,7 @@ histogram:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana
+    imagetag: cc7-reana-v1
     resources:
       - kerberos: true
   publisher:
@@ -265,7 +265,7 @@ compute_l2l3:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana
+    imagetag: cc7-reana-v1
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -305,7 +305,7 @@ closure:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana
+    imagetag: cc7-reana-v1
     resources:
       - kerberos: true
   publisher:
@@ -338,7 +338,7 @@ plot_closure:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana
+    imagetag: cc7-reana-v1
     resources:
       - kerberos: true
   publisher:
