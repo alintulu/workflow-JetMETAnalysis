@@ -20,7 +20,10 @@ list_lumi:
       make RunListRunLumi
 
       algorithm=$(echo {algo}{cone_size}{jet_type} | tr '[:upper:]' '[:lower:]')
-      ./RunListRunLumi {input_file} $algorithm > {output_file}
+      
+      for i in {input_file}; do
+        ./RunListRunLumi $i {algo} >> {output_file};
+      done
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
