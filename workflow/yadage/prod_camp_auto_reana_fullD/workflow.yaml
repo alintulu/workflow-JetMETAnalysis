@@ -78,7 +78,7 @@ stages:
         algo: 'AK'
         cone_size: '4'
         jet_type: 'PFchs'
-        input_file_PU: {stages: 'temp', output: PU_files, unwrap: true}
+        input_file: {stages: 'temp', output: PU_files, unwrap: true}
         PU_dist_data: '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions18/13TeV/PileUp/PileupHistogram-goldenJSON-13tev-2018-69200ub.root'
         PU_dist_mc: {stages: 'match_jets', output: PU_dist_mc}
         release: 'CMSSW_10_6_12'
@@ -112,7 +112,7 @@ stages:
       parameters:
         l1_corr: {stages: 'compute_l1', output: l1_corr}
         l2l3_corr: {stages: 'compute_l2l3', output: l2l3_corr}
-        input_file_PU: {stages: 'temp', output: PU_files, unwrap: true}
+        input_file: {stages: 'temp', output: PU_files, unwrap: true}
         algo: 'AK'
         cone_size: '4'
         jet_type: 'PFchs'
