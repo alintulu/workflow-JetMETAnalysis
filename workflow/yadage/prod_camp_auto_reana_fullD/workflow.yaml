@@ -7,7 +7,7 @@ stages:
       step: {$ref: steps.yaml#/temp}
 
   - name: produce_ntuple
-    dependencies: [temp]
+    dependencies: [temps]
     scheduler:
       scheduler_type: singlestep-stage
       parameters:
@@ -21,7 +21,7 @@ stages:
       workflow: {$ref: workflow_ntuple.yaml}
 
   - name: match_lumi
-    dependencies: [produce_ntuple]
+    dependencies: [produce_ntuples]
     scheduler:
       scheduler_type: singlestep-stage
       parameters:
@@ -31,13 +31,20 @@ stages:
         scram_arch: 'slc7_amd64_gcc700'
         output_file: '{workdir}/Matchedfiles.yml'
       step: {$ref: steps.yaml#/match_lumi}
+
+  - name: temp2
+    scheduler:
+      scheduler_type: singlestep-stage
+      parameters:
+        output_file: '{workdir}/Matchedfiles.yml'
+      step: {$ref: steps.yaml#/temp2}
         
   - name: match_jets
     dependencies: [match_lumi]
     scheduler:
       scheduler_type: multistep-stage
       parameters:
-        input_file: {stages: 'match_lumi', output: MatchedFiles, unwrap: true}
+        input_file: {stages: 'temp2', output: MatchedFiles, unwrap: true}
         PU_dist_data: '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions18/13TeV/PileUp/PileupHistogram-goldenJSON-13tev-2018-69200ub.root'
         mix_conf_mc: '2018_25ns_UltraLegacy_PoissonOOTPU'
         PU_dist_mc: '{workdir}/PU_dist_mc.root'

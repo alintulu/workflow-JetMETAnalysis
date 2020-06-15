@@ -21,7 +21,7 @@ temp:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v1
+    imagetag: cc7-reana-v2
 
 list_lumi:
   process:
@@ -41,7 +41,7 @@ list_lumi:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v1
+    imagetag: cc7-reana-v2
     resources:
       - kerberos: true
   publisher:
@@ -69,7 +69,21 @@ match_lumi:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v1
+    imagetag: cc7-reana-v2
+
+temp2:
+  process:
+    process_type: interpolated-script-cmd
+    interpreter: bash
+    script: |
+      cp $HOME/helper/Matchedfiles.yml {output_file}
+  publisher:
+    publisher_type: fromyaml-pub
+    yamlfile: 'Matchedfiles.yml'
+  environment:
+    environment_type: docker-encapsulated
+    image: alintulu/jec
+    imagetag: cc7-reana-v2
 
 match_jets:
   process:
@@ -111,7 +125,7 @@ match_jets:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v1
+    imagetag: cc7-reana-v2
     resources:
       - kerberos: true
   publisher:
@@ -152,7 +166,7 @@ compute_l1:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v1
+    imagetag: cc7-reana-v2
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -184,7 +198,7 @@ apply_l1:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v1
+    imagetag: cc7-reana-v2
     resources:
       - kerberos: true
   publisher:
@@ -226,7 +240,7 @@ histogram:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v1
+    imagetag: cc7-reana-v2
     resources:
       - kerberos: true
   publisher:
@@ -267,7 +281,7 @@ compute_l2l3:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v1
+    imagetag: cc7-reana-v2
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -308,7 +322,7 @@ closure:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v1
+    imagetag: cc7-reana-v2
     resources:
       - kerberos: true
   publisher:
@@ -341,7 +355,7 @@ plot_closure:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v1
+    imagetag: cc7-reana-v2
     resources:
       - kerberos: true
   publisher:
