@@ -22,7 +22,7 @@ list_lumi:
       algorithm=$(echo {algo}{cone_size}{jet_type} | tr '[:upper:]' '[:lower:]')
       
       for i in {input_file}; do
-        ./RunListRunLumi $i {algo} >> {output_file};
+        ./RunListRunLumi $i $algorithm >> {output_file};
       done
   environment:
     environment_type: docker-encapsulated
