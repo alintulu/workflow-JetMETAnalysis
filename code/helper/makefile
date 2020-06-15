@@ -1,4 +1,4 @@
-all: RunListRunLumi RunMatchFiles RunPrepareStep2Submission Columnize
+all: RunListRunLumi RunMatchFiles RunPrepareMatching
 
 RunListRunLumi: ListRunLumi.cpp
 	g++ ListRunLumi.cpp -o RunListRunLumi \
@@ -7,8 +7,5 @@ RunListRunLumi: ListRunLumi.cpp
 RunMatchFiles: MatchFiles.cpp
 	g++ MatchFiles.cpp -o RunMatchFiles
 
-RunPrepareStep2Submission: PrepareStep2Submission.cpp
-	g++ PrepareStep2Submission.cpp -o RunPrepareStep2Submission
-
-Columnize: Columnize.cpp
-	g++ Columnize.cpp -o Columnize
+RunPrepareMatching: PrepareMatching.cpp
+	g++ PrepareMatching.cpp -o RunPrepareMatching
