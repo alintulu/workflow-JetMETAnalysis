@@ -1,0 +1,13 @@
+version: 0.6.0
+inputs:
+  files:
+    - steps.yaml
+    - workflow_higher_level.yaml
+    - workflow_ntuple.yaml
+    - workflow.yaml
+workflow:
+  type: yadage
+  file: workflow.yaml
+  resources:
+    cvmfs:
+      - cms.cern.ch
