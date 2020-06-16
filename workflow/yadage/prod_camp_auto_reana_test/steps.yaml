@@ -35,7 +35,7 @@ merge_ntuple:
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
     resources:
-      - kerberos: true
+      - CVMFS
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -53,6 +53,8 @@ create_PU_dist:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
+    resources:
+      - CVMFS
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -78,7 +80,7 @@ list_lumi:
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
     resources:
-      - kerberos: true
+      - CVMFS
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -105,6 +107,8 @@ match_lumi:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
+    resources:
+      - CVMFS
 
 initialise2:
   process:
@@ -119,6 +123,8 @@ initialise2:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
+    resources:
+      - CVMFS
 
 match_jets:
   process:
@@ -159,7 +165,7 @@ match_jets:
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
     resources:
-      - kerberos: true
+      - CVMFS
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -189,7 +195,7 @@ compute_l1:
         -highPU false \
         -useNPU false \
         -functionType standard \
-        -era {era}
+        -era {era}PreDeriveL1
 
       root -b -q -l `printf "deriveL1.C+(\"$algorithm\",\"{algo}{cone_size}{jet_type}\",\"{era}\")"`
       cp *.txt {output_path}
@@ -199,6 +205,8 @@ compute_l1:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
+    resources:
+      - CVMFS
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -229,6 +237,8 @@ apply_l1:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
+    resources:
+      - CVMFS
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -270,7 +280,7 @@ histogram:
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
     resources:
-      - kerberos: true
+      - CVMFS
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -310,6 +320,8 @@ compute_l2l3:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
+    resources:
+      - CVMFS
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -329,10 +341,14 @@ closure:
 
       algorithm=$(echo {algo}{cone_size}{jet_type} | tr '[:upper:]' '[:lower:]')
 
+      inputFileNamePath=$(echo {input_file} | rev | cut -d"/" -f2-  | rev)
+      inputFileName=$(echo {input_file} | rev | cut -d"/" -f1  | rev | cut -d"." -f1)
+
       jet_correction_analyzer_x \
-        -inputFilename {input_file} \
+        -inputFilename $inputFileName \
+        -inputFilePath $inputFileNamePath \
         -outputDir {output_path}/ \
-        -path '//' / \
+        -path $PWD \
         -era {era} \
         -levels 1 2 \
         -useweight true \
@@ -343,14 +359,14 @@ closure:
         -relrspmin 0.0 \
         -relrspmax 2.0 \
         -MCPUReWeighting {PU_dist_mc} \
-        -DataPUReWeighting `pwd`/MyDataPileupHistogram.root \
+        -DataPUReWeighting MyDataPileupHistogram.root \
         -nrefmax 3
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
     resources:
-      - kerberos: true
+      - CVMFS
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -383,7 +399,7 @@ plot_closure:
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
     resources:
-      - kerberos: true
+      - CVMFS
   publisher:
     publisher_type: interpolated-pub
     publish:
