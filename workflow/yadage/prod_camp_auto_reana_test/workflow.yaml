@@ -103,7 +103,7 @@ stages:
         algo: 'AK'
         cone_size: '4'
         jet_type: 'PFchs'
-        input_file: {stages: 'merge_ntuple', output: merged, unwrap: true}
+        input_file: {stages: 'merge_ntuple', output: merged}
         PU_dist_mc: {stages: 'create_PU_dist', output: PU_dist_mc}
         release: 'CMSSW_10_6_12'
         scram_arch: 'slc7_amd64_gcc700'
@@ -135,7 +135,7 @@ stages:
       parameters:
         l1_corr: {stages: 'compute_l1', output: l1_corr}
         l2l3_corr: {stages: 'compute_l2l3', output: l2l3_corr}
-        input_file: {stages: 'merge_ntuple', output: merged, unwrap: true}
+        input_file: {stages: 'merge_ntuple', output: merged}
         algo: 'AK'
         cone_size: '4'
         jet_type: 'PFchs'

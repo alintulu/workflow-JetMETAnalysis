@@ -34,8 +34,6 @@ merge_ntuple:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
-    resources:
-      - kerberos: true
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -77,8 +75,6 @@ list_lumi:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
-    resources:
-      - kerberos: true
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -158,8 +154,6 @@ match_jets:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
-    resources:
-      - kerberos: true
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -189,7 +183,7 @@ compute_l1:
         -highPU false \
         -useNPU false \
         -functionType standard \
-        -era {era}
+        -era {era}PreDeriveL1
 
       root -b -q -l `printf "deriveL1.C+(\"$algorithm\",\"{algo}{cone_size}{jet_type}\",\"{era}\")"`
       cp *.txt {output_path}
@@ -269,8 +263,6 @@ histogram:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
-    resources:
-      - kerberos: true
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -329,10 +321,14 @@ closure:
 
       algorithm=$(echo {algo}{cone_size}{jet_type} | tr '[:upper:]' '[:lower:]')
 
+      inputFileNamePath=$(echo {input_file} | rev | cut -d"/" -f2-  | rev)
+      inputFileName=$(echo {input_file} | rev | cut -d"/" -f1  | rev | cut -d"." -f1)
+
       jet_correction_analyzer_x \
-        -inputFilename {input_file} \
+        -inputFilename $inputFileName \
+        -inputFilePath $inputFileNamePath \
         -outputDir {output_path}/ \
-        -path '//' / \
+        -path $PWD \
         -era {era} \
         -levels 1 2 \
         -useweight true \
@@ -343,14 +339,12 @@ closure:
         -relrspmin 0.0 \
         -relrspmax 2.0 \
         -MCPUReWeighting {PU_dist_mc} \
-        -DataPUReWeighting `pwd`/MyDataPileupHistogram.root \
+        -DataPUReWeighting MyDataPileupHistogram.root \
         -nrefmax 3
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
-    resources:
-      - kerberos: true
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -382,8 +376,6 @@ plot_closure:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
-    resources:
-      - kerberos: true
   publisher:
     publisher_type: interpolated-pub
     publish:
