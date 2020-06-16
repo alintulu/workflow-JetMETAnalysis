@@ -33,6 +33,7 @@ stages:
       step: {$ref: steps.yaml#/match_lumi}
 
   - name: temp2
+    dependencies: [temp]
     scheduler:
       scheduler_type: singlestep-stage
       parameters:
@@ -40,7 +41,7 @@ stages:
       step: {$ref: steps.yaml#/temp2}
         
   - name: match_jets
-    dependencies: [match_lumi]
+    dependencies: [temp2]
     scheduler:
       scheduler_type: multistep-stage
       parameters:
