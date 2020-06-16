@@ -34,8 +34,6 @@ merge_ntuple:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
-    resources:
-      - CVMFS
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -53,8 +51,6 @@ create_PU_dist:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
-    resources:
-      - CVMFS
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -79,8 +75,6 @@ list_lumi:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
-    resources:
-      - CVMFS
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -107,8 +101,6 @@ match_lumi:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
-    resources:
-      - CVMFS
 
 initialise2:
   process:
@@ -123,8 +115,6 @@ initialise2:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
-    resources:
-      - CVMFS
 
 match_jets:
   process:
@@ -164,8 +154,6 @@ match_jets:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
-    resources:
-      - CVMFS
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -205,8 +193,6 @@ compute_l1:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
-    resources:
-      - CVMFS
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -237,8 +223,6 @@ apply_l1:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
-    resources:
-      - CVMFS
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -279,8 +263,6 @@ histogram:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
-    resources:
-      - CVMFS
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -320,8 +302,6 @@ compute_l2l3:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
-    resources:
-      - CVMFS
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -365,8 +345,6 @@ closure:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
-    resources:
-      - CVMFS
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -398,8 +376,6 @@ plot_closure:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
-    resources:
-      - CVMFS
   publisher:
     publisher_type: interpolated-pub
     publish:
