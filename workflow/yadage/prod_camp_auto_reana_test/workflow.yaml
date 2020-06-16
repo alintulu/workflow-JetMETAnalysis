@@ -3,7 +3,7 @@ stages:
     scheduler:
       scheduler_type: singlestep-stage
       parameters:
-        input_file: 'short_files.yml'
+        input_file: 'short_files_local.yml'
         output_file: '{workdir}/short_files.yml'
       step: {$ref: steps.yaml#/initialise}
 
@@ -158,6 +158,6 @@ stages:
         input_file: {stages: 'closure', output: closure}
         release: 'CMSSW_10_6_12'
         scram_arch: 'slc7_amd64_gcc700'
-        output_path: '/eos/user/a/adlintul/reana/plot_closure'
+        output_path: '{workdir}'
         output_file: '{workdir}/Closure_ak4pfchs.root'
       step: {$ref: 'steps.yaml#/plot_closure'}

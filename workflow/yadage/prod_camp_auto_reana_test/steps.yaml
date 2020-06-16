@@ -21,7 +21,7 @@ initialise:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v3
+    imagetag: cc7-reana-v4-files
 
 merge_ntuple:
   process:
@@ -33,7 +33,7 @@ merge_ntuple:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v3
+    imagetag: cc7-reana-v4-files
     resources:
       - kerberos: true
   publisher:
@@ -52,7 +52,7 @@ create_PU_dist:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v3
+    imagetag: cc7-reana-v4-files
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -76,7 +76,7 @@ list_lumi:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v3
+    imagetag: cc7-reana-v4-files
     resources:
       - kerberos: true
   publisher:
@@ -104,7 +104,7 @@ match_lumi:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v3
+    imagetag: cc7-reana-v4-files
 
 initialise2:
   process:
@@ -118,7 +118,7 @@ initialise2:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v3
+    imagetag: cc7-reana-v4-files
 
 match_jets:
   process:
@@ -157,7 +157,7 @@ match_jets:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v3
+    imagetag: cc7-reana-v4-files
     resources:
       - kerberos: true
   publisher:
@@ -198,7 +198,7 @@ compute_l1:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v3
+    imagetag: cc7-reana-v4-files
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -228,7 +228,7 @@ apply_l1:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v3
+    imagetag: cc7-reana-v4-files
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -268,7 +268,7 @@ histogram:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v3
+    imagetag: cc7-reana-v4-files
     resources:
       - kerberos: true
   publisher:
@@ -309,7 +309,7 @@ compute_l2l3:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v3
+    imagetag: cc7-reana-v4-files
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -348,7 +348,7 @@ closure:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v3
+    imagetag: cc7-reana-v4-files
     resources:
       - kerberos: true
   publisher:
@@ -381,7 +381,7 @@ plot_closure:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v3
+    imagetag: cc7-reana-v4-files
     resources:
       - kerberos: true
   publisher:
