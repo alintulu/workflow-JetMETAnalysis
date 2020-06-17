@@ -181,8 +181,55 @@ match_jets:
 
       read -r NoPUFile PUFile <<<$(echo {input_file})
 
-      hadd -f -k NoPUFile.root `echo $NoPUFile | tr ':' ' '`
-      hadd -f -k PUFile.root `echo $PUFile | tr ':' ' '`
+      NoPUFile=$(echo $NoPUFile | tr ':' ' ')
+      PUFile=$(echo $PUFile | tr ':' ' ')
+
+      nopu_files="$NoPUFile"
+
+      for file in $NoPUFile; do
+        n=0
+        until [ "$n" -ge 5 ]; do
+          ls $file
+          root -q -b $file
+          if [ $? -eq 255 ]; then
+            break
+          fi
+          n=$(($n+1)) 
+          sleep 10
+        done
+
+        if [ "$n" == 5 ]; then
+          echo "$file corrupted! Removing it from the list."
+          echo -n "$nopu_files ==> "
+          nopu_files=$(echo $nopu_files | sed s/"$file"//)
+          echo $nopu_files
+        fi
+      done
+
+      pu_files="$PUFile"
+
+      for file in $PUFile; do
+        n=0
+        until [ "$n" -ge 5 ]; do
+          ls $file
+          root -q -b $file
+          if [ $? -eq 255 ]; then
+            break
+          fi
+          n=$(($n+1)) 
+          sleep 10
+        done
+
+        if [ "$n" == 5 ]; then
+          echo "$file corrupted! Removing it from the list."
+          echo -n "$pu_files ==> "
+          pu_files=$(echo $pu_files | sed s/"$file"//)
+          echo $pu_files
+        fi
+      done
+
+      hadd -f -k NoPUFile.root $nopu_files
+      hadd -f -k PUFile.root $pu_files
 
       algorithm=$(echo {algo}{cone_size}{jet_type} | tr '[:upper:]' '[:lower:]')
 
@@ -207,6 +254,8 @@ match_jets:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
+    resources:
+      - kerberos: true
   publisher:
     publisher_type: interpolated-pub
     publish:
