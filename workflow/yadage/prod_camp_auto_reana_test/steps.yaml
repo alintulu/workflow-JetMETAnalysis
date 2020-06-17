@@ -17,7 +17,7 @@ initialise:
       cp $HOME/helper/{input_file} {output_file}
   publisher:
     publisher_type: fromyaml-pub
-    yamlfile: 'short_files.yml'
+    yamlfile: 'files.yml'
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
@@ -34,6 +34,8 @@ merge_ntuple:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
+    resources:
+      - kerberos: true
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -75,6 +77,8 @@ list_lumi:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
+    resources:
+      - kerberos: true
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -376,6 +380,8 @@ plot_closure:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: cc7-reana-v4-files
+    resources:
+      - kerberos: true
   publisher:
     publisher_type: interpolated-pub
     publish:
