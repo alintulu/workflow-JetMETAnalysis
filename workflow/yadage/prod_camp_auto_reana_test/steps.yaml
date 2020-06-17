@@ -26,7 +26,7 @@ initialise:
 merge_ntuple:
   process:
     process_type: interpolated-script-cmd
-    interpreter: zsh
+    interpreter: bash
     script: |
       source $HOME/helper/setup_cmssw.sh {release} {scram_arch}
 
@@ -45,9 +45,9 @@ merge_ntuple:
         done
 
         if [ "$n" == 5 ]; then
-          echo "$file corrupted! Removing it from the list."
+          echo "!!!!!!! $file corrupted! Removing it from the list. !!!!!!!"
           echo -n "$files ==> "
-          files=$(echo $files | sed s/"$file"//)
+          files=$(echo $files | sed s@"$file"@@)
           echo $files
         fi
       done
@@ -88,7 +88,7 @@ create_PU_dist:
 list_lumi:
   process:
     process_type: interpolated-script-cmd
-    interpreter: zsh
+    interpreter: bash
     script: |
       source $HOME/helper/setup_cmssw.sh {release} {scram_arch}
       cp $HOME/helper/ListRunLumi.cpp .
@@ -112,9 +112,9 @@ list_lumi:
         done
 
         if [ "$n" == 5 ]; then
-          echo "$file corrupted! Removing it from the list."
+          echo "!!!!!!! $file corrupted! Removing it from the list. !!!!!!!"
           echo -n "$files ==> "
-          files=$(echo $files | sed s/"$file"//)
+          files=$(echo $files | sed s@"$file"@@)
           echo $files
         fi
       done
@@ -172,7 +172,7 @@ initialise2:
 match_jets:
   process:
     process_type: interpolated-script-cmd
-    interpreter: zsh
+    interpreter: bash
     script: | 
       source $HOME/helper/setup_cmssw.sh {release} {scram_arch}
       cp $HOME/JetMETAnalysis/workflow/HTCondor/Files/My*.root .
@@ -199,9 +199,9 @@ match_jets:
         done
 
         if [ "$n" == 5 ]; then
-          echo "$file corrupted! Removing it from the list."
+          echo "!!!!!!! $file corrupted! Removing it from the list. !!!!!!!"
           echo -n "$nopu_files ==> "
-          nopu_files=$(echo $nopu_files | sed s/"$file"//)
+          nopu_files=$(echo $nopu_files | sed s@"$file"@@)
           echo $nopu_files
         fi
       done
@@ -221,9 +221,9 @@ match_jets:
         done
 
         if [ "$n" == 5 ]; then
-          echo "$file corrupted! Removing it from the list."
+          echo "!!!!!!! $file corrupted! Removing it from the list. !!!!!!!"
           echo -n "$pu_files ==> "
-          pu_files=$(echo $pu_files | sed s/"$file"//)
+          pu_files=$(echo $pu_files | sed s@"$file"@@)
           echo $pu_files
         fi
       done
