@@ -1,5 +1,7 @@
 version: 0.6.0
 inputs:
+  parameters:
+    path_PU: PU
   files:
     - PU/files_0.tar.gz
     - workflow.yaml

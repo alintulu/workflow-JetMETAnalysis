@@ -5,17 +5,16 @@ stages:
       parameters:
         output_folder_PU: '{workdir}/PU'
         output_folder_noPU: '{workdir}/noPU'
+        path_PU: {step: init, output: path_PU}
         random: '{workdir}/random'
       step:
         process:
           process_type: interpolated-script-cmd
           interpreter: bash
           script: |
-            for i in $(ls {output_folder_PU}); do
-              tar -xvzf {output_folder_PU}/$i -C {output_folder_PU}
+            for i in $(ls {path_PU}); do
+              tar -xvzf {path_PU}/$i -C {output_folder_PU}
             done
-
-            touch {random}
 
             for i in $(ls {output_folder_noPU}); do
               tar -xvzf {output_folder_noPU}$i -C {output_folder_noPU}
@@ -23,7 +22,7 @@ stages:
         publisher:
           publisher_type: interpolated-pub
           publish:
-            ntuple_file: '{random}'
+            ntuple_file: '{output_folder_PU}'
         environment:
           environment_type: 'docker-encapsulated'
           image: alintulu/jec
