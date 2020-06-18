@@ -5,6 +5,7 @@ stages:
       parameters:
         output_folder_PU: '{workdir}/PU'
         output_folder_noPU: '{workdir}/noPU'
+        random: '{workdir}/random'
       step:
         process:
           process_type: interpolated-script-cmd
@@ -14,13 +15,15 @@ stages:
               tar -xvzf {output_folder_PU}/$i -C {output_folder_PU}
             done
 
+            touch {random}
+
             for i in $(ls {output_folder_noPU}); do
               tar -xvzf {output_folder_noPU}$i -C {output_folder_noPU}
             done
         publisher:
           publisher_type: 'frompar-pub'
           outputmap:
-            outputfile: '{output_folder}'
+            outputfile: '{random}'
         environment:
           environment_type: 'docker-encapsulated'
           image: alintulu/jec

@@ -2,6 +2,69 @@ version: 0.6.0
 inputs:
   files:
     - PU/files_0.tar.gz
+    - PU/files_10.tar.gz
+    - PU/files_11.tar.gz
+    - PU/files_12.tar.gz
+    - PU/files_13.tar.gz
+    - PU/files_14.tar.gz
+    - PU/files_15.tar.gz
+    - PU/files_16.tar.gz
+    - PU/files_17.tar.gz
+    - PU/files_18.tar.gz
+    - PU/files_19.tar.gz
+    - PU/files_1.tar.gz
+    - PU/files_20.tar.gz
+    - PU/files_21.tar.gz
+    - PU/files_22.tar.gz
+    - PU/files_23.tar.gz
+    - PU/files_24.tar.gz
+    - PU/files_25.tar.gz
+    - PU/files_26.tar.gz
+    - PU/files_27.tar.gz
+    - PU/files_28.tar.gz
+    - PU/files_29.tar.gz
+    - PU/files_2.tar.gz
+    - PU/files_30.tar.gz
+    - PU/files_31.tar.gz
+    - PU/files_32.tar.gz
+    - PU/files_33.tar.gz
+    - PU/files_34.tar.gz
+    - PU/files_35.tar.gz
+    - PU/files_36.tar.gz
+    - PU/files_37.tar.gz
+    - PU/files_38.tar.gz
+    - PU/files_39.tar.gz
+    - PU/files_3.tar.gz
+    - PU/files_40.tar.gz
+    - PU/files_41.tar.gz
+    - PU/files_42.tar.gz
+    - PU/files_43.tar.gz
+    - PU/files_44.tar.gz
+    - PU/files_45.tar.gz
+    - PU/files_46.tar.gz
+    - PU/files_47.tar.gz
+    - PU/files_48.tar.gz
+    - PU/files_49.tar.gz
+    - PU/files_4.tar.gz
+    - PU/files_5.tar.gz
+    - PU/files_6.tar.gz
+    - PU/files_7.tar.gz
+    - PU/files_8.tar.gz
+    - PU/files_9.tar.gz
+    - noPU/files_noPU_0.tar.gz
+    - noPU/files_noPU_10.tar.gz
+    - noPU/files_noPU_11.tar.gz
+    - noPU/files_noPU_12.tar.gz
+    - noPU/files_noPU_13.tar.gz
+    - noPU/files_noPU_1.tar.gz
+    - noPU/files_noPU_2.tar.gz
+    - noPU/files_noPU_3.tar.gz
+    - noPU/files_noPU_4.tar.gz
+    - noPU/files_noPU_5.tar.gz
+    - noPU/files_noPU_6.tar.gz
+    - noPU/files_noPU_7.tar.gz
+    - noPU/files_noPU_8.tar.gz
+    - noPU/files_noPU_9.tar.gz
     - workflow.yaml
 workflow:
   type: yadage
