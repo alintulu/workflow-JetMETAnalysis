@@ -14,14 +14,14 @@ initialise:
     process_type: interpolated-script-cmd
     interpreter: bash
     script: |
-      cp $HOME/helper/{input_file} {output_file}
+      cp {input_file} {output_file}
   publisher:
     publisher_type: fromyaml-pub
     yamlfile: 'files.yml'
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v4-files
+    imagetag: box-slc6-v2
 
 merge_ntuple:
   process:
@@ -60,9 +60,7 @@ merge_ntuple:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v4-files
-    resources:
-      - kerberos: true
+    imagetag: box-slc6-v2
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -79,7 +77,7 @@ create_PU_dist:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v4-files
+    imagetag: box-slc6-v2
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -125,9 +123,7 @@ list_lumi:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v4-files
-    resources:
-      - kerberos: true
+    imagetag: box-slc6-v2
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -153,7 +149,7 @@ match_lumi:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v4-files
+    imagetag: box-slc6-v2
 
 initialise2:
   process:
@@ -167,7 +163,7 @@ initialise2:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v4-files
+    imagetag: box-slc6-v2
 
 match_jets:
   process:
@@ -253,9 +249,7 @@ match_jets:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v4-files
-    resources:
-      - kerberos: true
+    imagetag: box-slc6-v2
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -294,7 +288,7 @@ compute_l1:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v4-files
+    imagetag: box-slc6-v2
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -324,7 +318,7 @@ apply_l1:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v4-files
+    imagetag: box-slc6-v2
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -364,7 +358,7 @@ histogram:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v4-files
+    imagetag: box-slc6-v2
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -403,7 +397,7 @@ compute_l2l3:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v4-files
+    imagetag: box-slc6-v2
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -446,7 +440,7 @@ closure:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v4-files
+    imagetag: box-slc6-v2
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -474,15 +468,10 @@ plot_closure:
         -draw_guidelines true \
         -doRatioPt false \
         -doRatioEta false
-
-      cp {output_path}/*.png {output_path_eos}
-      cp {output_path}/*.eps {output_path_eos}
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v4-files
-    resources:
-      - kerberos: true
+    imagetag: box-slc6-v2
   publisher:
     publisher_type: interpolated-pub
     publish:

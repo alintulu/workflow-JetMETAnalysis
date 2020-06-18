@@ -1,0 +1,6 @@
+PU_files:
+  - "$REANA_WORKSPACE/JRA1.root"
+  - "$REANA_WORKSPACE/JRA118.root"
+noPU_files:
+  - "$REANA_WORKSPACE/JRA22.root"
+  - "$REANA_WORKSPACE/JRA100.root"

@@ -1,10 +1,13 @@
 version: 0.6.0
 inputs:
-  parameters:
-    path_PU: PU
   files:
-    - PU/files_0.tar.gz
+    - steps.yaml
+    - workflow_higher_level.yaml
+    - workflow_ntuple.yaml
     - workflow.yaml
+    - files.yml
+  parameters:
+    input_file: files.yml
 workflow:
   type: yadage
   file: workflow.yaml
