@@ -16,13 +16,17 @@ stages:
               tar -xvzf {path_PU}/$i -C {output_folder_PU}
             done
 
+            ls -l 
+
+            touch {random}
+
             for i in $(ls {output_folder_noPU}); do
               tar -xvzf {output_folder_noPU}$i -C {output_folder_noPU}
             done
         publisher:
           publisher_type: interpolated-pub
           publish:
-            ntuple_file: '{output_folder_PU}'
+            ntuple_file: '{random}'
         environment:
           environment_type: 'docker-encapsulated'
           image: alintulu/jec
