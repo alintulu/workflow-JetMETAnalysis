@@ -1,25 +1,21 @@
 stages:
   - name: extract_files
-    dependencies: [init]
     scheduler:
       scheduler_type: 'singlestep-stage'
       parameters:
-        output_folder: '{workdir}'
-        path_PU: {step: init, output: path_PU}
-        path_noPU: {step: init, output: path_noPU}
+        output_folder_PU: '{workdir}/PU'
+        output_folder_noPU: '{workdir}/noPU'
       step:
         process:
           process_type: interpolated-script-cmd
           interpreter: bash
           script: |
-            mkdir -p {output_folder}/PU
-            for i in $(ls {output_folder}/{path_PU}); do
-              tar -xvzf {output_folder}/{path_PU}/$i -C {output_folder}/PU
+            for i in $(ls {output_folder_PU}); do
+              tar -xvzf {output_folder_PU}/$i -C {output_folder_PU}
             done
 
-            mkdir -p {output_folder}/noPU
-            for i in $(ls {output_folder}/{path_noPU}); do
-              tar -xvzf {output_folder}/{path_noPU}/$i -C {output_folder}/noPU
+            for i in $(ls {output_folder_noPU}); do
+              tar -xvzf {output_folder_noPU}$i -C {output_folder_noPU}
             done
         publisher:
           publisher_type: 'frompar-pub'
