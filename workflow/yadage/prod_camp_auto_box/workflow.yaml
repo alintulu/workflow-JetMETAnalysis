@@ -21,9 +21,9 @@ stages:
               tar -xvzf {output_folder_noPU}$i -C {output_folder_noPU}
             done
         publisher:
-          publisher_type: 'frompar-pub'
-          outputmap:
-            outputfile: '{random}'
+          publisher_type: interpolated-pub
+          publish:
+            ntuple_file: '{random}'
         environment:
           environment_type: 'docker-encapsulated'
           image: alintulu/jec
