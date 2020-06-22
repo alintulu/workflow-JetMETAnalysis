@@ -14,21 +14,26 @@ initialise:
     process_type: interpolated-script-cmd
     interpreter: bash
     script: |
-      cp $HOME/helper/{input_file} {output_file}
+      cp {input_file} {output_file}
   publisher:
     publisher_type: fromyaml-pub
     yamlfile: 'files.yml'
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v4-files
+    imagetag: box-slc6-v2
 
 merge_ntuple:
   process:
     process_type: interpolated-script-cmd
     interpreter: bash
     script: |
-      source $HOME/helper/setup_cmssw.sh {release} {scram_arch}
+      echo "Setting up CMSSW_10_3_3"
+      source /opt/cms/cmsset_default.sh
+      scramv1 project CMSSW CMSSW_10_3_3
+      cd CMSSW_10_3_3/src
+      eval `scramv1 runtime -sh`
+      echo "CMSSW should now be available."
 
       files="{input_file}"
 
@@ -52,7 +57,7 @@ merge_ntuple:
         fi
       done
 
-      hadd -k -f {output_file} $files
+      hadd -k -f -n 5 {output_file} $files
       if [ $? -ne 0 ]; then
         echo "Returned zero even though non-zero exit status"
         return 0
@@ -60,9 +65,7 @@ merge_ntuple:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v4-files
-    resources:
-      - kerberos: true
+    imagetag: box-slc6-v2
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -73,13 +76,18 @@ create_PU_dist:
     process_type: interpolated-script-cmd
     interpreter: zsh
     script: |
-      source $HOME/helper/setup_cmssw.sh {release} {scram_arch}
-      cp $HOME/helper/makeMCPileupHist.py .
-      python makeMCPileupHist.py SimGeneral.MixingModule.mix_{mix_conf_mc}_cfi --outputFilename {PU_dist_mc}
+      echo "Setting up CMSSW_10_3_3"
+      source /opt/cms/cmsset_default.sh
+      scramv1 project CMSSW CMSSW_10_3_3
+      cd CMSSW_10_3_3/src
+      eval `scramv1 runtime -sh`
+      echo "CMSSW should now be available."
+
+      cp $HOME/JetMETAnalysis/workflow/HTCondor/Files/MyMCPileupHistogram.root {PU_dist_mc} 
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v4-files
+    imagetag: box-slc6-v2
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -90,7 +98,13 @@ list_lumi:
     process_type: interpolated-script-cmd
     interpreter: bash
     script: |
-      source $HOME/helper/setup_cmssw.sh {release} {scram_arch}
+      
+      echo "Setting up CMSSW_10_3_3"
+      source /opt/cms/cmsset_default.sh
+      scramv1 project CMSSW CMSSW_10_3_3
+      cd CMSSW_10_3_3/src
+      eval `scramv1 runtime -sh`
+      echo "CMSSW should now be available."
       cp $HOME/helper/ListRunLumi.cpp .
       cp $HOME/helper/makefile .
       make RunListRunLumi
@@ -125,9 +139,7 @@ list_lumi:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v4-files
-    resources:
-      - kerberos: true
+    imagetag: box-slc6-v2
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -138,7 +150,12 @@ match_lumi:
     process_type: interpolated-script-cmd
     interpreter: bash
     script: |
-      source $HOME/helper/setup_cmssw.sh {release} {scram_arch}
+      echo "Setting up CMSSW_10_3_3"
+      source /opt/cms/cmsset_default.sh
+      scramv1 project CMSSW CMSSW_10_3_3
+      cd CMSSW_10_3_3/src
+      eval `scramv1 runtime -sh`
+      echo "CMSSW should now be available."
       cp $HOME/helper/MatchFiles.cpp .
       cp $HOME/helper/PrepareMatching.cpp .
       cp $HOME/helper/makefile .
@@ -153,7 +170,7 @@ match_lumi:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v4-files
+    imagetag: box-slc6-v2
 
 initialise2:
   process:
@@ -167,14 +184,19 @@ initialise2:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v4-files
+    imagetag: box-slc6-v2
 
 match_jets:
   process:
     process_type: interpolated-script-cmd
     interpreter: bash
     script: | 
-      source $HOME/helper/setup_cmssw.sh {release} {scram_arch}
+      echo "Setting up CMSSW_10_3_3"
+      source /opt/cms/cmsset_default.sh
+      scramv1 project CMSSW CMSSW_10_3_3
+      cd CMSSW_10_3_3/src
+      eval `scramv1 runtime -sh`
+      echo "CMSSW should now be available."
       cp $HOME/JetMETAnalysis/workflow/HTCondor/Files/My*.root .
       cp -r $HOME/JetMETAnalysis .
       scram b
@@ -228,8 +250,11 @@ match_jets:
         fi
       done
 
-      hadd -f -k NoPUFile.root $nopu_files
-      hadd -f -k PUFile.root $pu_files
+      hadd -f -k -n 5 NoPUFile.root $nopu_files
+      hadd -f -k -n 5 PUFile.root $pu_files
+
+      echo "Files in directory!"
+      ls -l
 
       algorithm=$(echo {algo}{cone_size}{jet_type} | tr '[:upper:]' '[:lower:]')
 
@@ -253,9 +278,7 @@ match_jets:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v4-files
-    resources:
-      - kerberos: true
+    imagetag: box-slc6-v2
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -267,7 +290,12 @@ compute_l1:
     process_type: interpolated-script-cmd
     interpreter: zsh
     script: | 
-      source $HOME/helper/setup_cmssw.sh {release} {scram_arch}
+      echo "Setting up CMSSW_10_3_3"
+      source /opt/cms/cmsset_default.sh
+      scramv1 project CMSSW CMSSW_10_3_3
+      cd CMSSW_10_3_3/src
+      eval `scramv1 runtime -sh`
+      echo "CMSSW should now be available."
       cp $HOME/helper/deriveL1.C .
       cp -r $HOME/JetMETAnalysis .
       scram b
@@ -275,7 +303,7 @@ compute_l1:
       algorithm=$(echo {algo}{cone_size}{jet_type} | tr '[:upper:]' '[:lower:]')
       merge=output_$(echo {algo}{cone_size}{jet_type} | tr '[:upper:]' '[:lower:]').root
 
-      hadd -k -f $merge {input_file}
+      hadd -k -f -n 5 $merge {input_file}
 
       jet_synchfit_x \
         -inputDir  $PWD \
@@ -294,7 +322,7 @@ compute_l1:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v4-files
+    imagetag: box-slc6-v2
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -305,7 +333,12 @@ apply_l1:
     process_type: interpolated-script-cmd
     interpreter: zsh
     script: |
-      source $HOME/helper/setup_cmssw.sh {release} {scram_arch}
+      echo "Setting up CMSSW_10_3_3"
+      source /opt/cms/cmsset_default.sh
+      scramv1 project CMSSW CMSSW_10_3_3
+      cd CMSSW_10_3_3/src
+      eval `scramv1 runtime -sh`
+      echo "CMSSW should now be available."
       cp {l1_corr} .
       cp -r $HOME/JetMETAnalysis .
       scram b
@@ -324,7 +357,7 @@ apply_l1:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v4-files
+    imagetag: box-slc6-v2
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -335,7 +368,12 @@ histogram:
     process_type: interpolated-script-cmd
     interpreter: zsh
     script: |
-      source $HOME/helper/setup_cmssw.sh {release} {scram_arch}
+      echo "Setting up CMSSW_10_3_3"
+      source /opt/cms/cmsset_default.sh
+      scramv1 project CMSSW CMSSW_10_3_3
+      cd CMSSW_10_3_3/src
+      eval `scramv1 runtime -sh`
+      echo "CMSSW should now be available."
       cp $HOME/JetMETAnalysis/workflow/HTCondor/Files/My*.root .
       cp $HOME/JetMETAnalysis/JetAnalyzers/config/jra_dr_finebinning.config jra.config
       cp -r $HOME/JetMETAnalysis .
@@ -364,7 +402,7 @@ histogram:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v4-files
+    imagetag: box-slc6-v2
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -375,11 +413,16 @@ compute_l2l3:
     process_type: interpolated-script-cmd
     interpreter: zsh
     script: |
-      source $HOME/helper/setup_cmssw.sh {release} {scram_arch}
+      echo "Setting up CMSSW_10_3_3"
+      source /opt/cms/cmsset_default.sh
+      scramv1 project CMSSW CMSSW_10_3_3
+      cd CMSSW_10_3_3/src
+      eval `scramv1 runtime -sh`
+      echo "CMSSW should now be available."
       cp -r $HOME/JetMETAnalysis .
       scram b
 
-      hadd -k -f Merged.root {input_file}
+      hadd -k -f -n 5 Merged.root {input_file}
 
       algorithm=$(echo {algo}{cone_size}{jet_type} | tr '[:upper:]' '[:lower:]')l1
 
@@ -403,7 +446,7 @@ compute_l2l3:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v4-files
+    imagetag: box-slc6-v2
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -414,7 +457,12 @@ closure:
     process_type: interpolated-script-cmd
     interpreter: zsh
     script: |
-      source $HOME/helper/setup_cmssw.sh {release} {scram_arch}
+      echo "Setting up CMSSW_10_3_3"
+      source /opt/cms/cmsset_default.sh
+      scramv1 project CMSSW CMSSW_10_3_3
+      cd CMSSW_10_3_3/src
+      eval `scramv1 runtime -sh`
+      echo "CMSSW should now be available."
       cp $HOME/JetMETAnalysis/workflow/HTCondor/Files/My*.root .
       cp {l1_corr} .
       cp {l2l3_corr} .
@@ -446,7 +494,7 @@ closure:
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v4-files
+    imagetag: box-slc6-v2
   publisher:
     publisher_type: interpolated-pub
     publish:
@@ -458,11 +506,16 @@ plot_closure:
     interpreter: zsh
     script: |
       mkdir -p {output_path}
-      source $HOME/helper/setup_cmssw.sh {release} {scram_arch}
+      echo "Setting up CMSSW_10_3_3"
+      source /opt/cms/cmsset_default.sh
+      scramv1 project CMSSW CMSSW_10_3_3
+      cd CMSSW_10_3_3/src
+      eval `scramv1 runtime -sh`
+      echo "CMSSW should now be available."
       cp -r $HOME/JetMETAnalysis .
       scram b
       
-      hadd -k -f Merged.root {input_file}
+      hadd -k -f -n 5 Merged.root {input_file}
 
       jet_draw_closure_x \
         -doPt true \
@@ -474,15 +527,10 @@ plot_closure:
         -draw_guidelines true \
         -doRatioPt false \
         -doRatioEta false
-
-      cp {output_path}/*.png {output_path_eos}
-      cp {output_path}/*.eps {output_path_eos}
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
-    imagetag: cc7-reana-v4-files
-    resources:
-      - kerberos: true
+    imagetag: box-slc6-v2
   publisher:
     publisher_type: interpolated-pub
     publish:
