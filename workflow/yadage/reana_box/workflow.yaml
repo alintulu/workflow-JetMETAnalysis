@@ -62,7 +62,7 @@ stages:
   - name: match_jets
     dependencies: [match_lumi]
     scheduler:
-      scheduler_type: multistep-stage
+      scheduler_type: singlestep-stage
       parameters:
         input_file: {stages: 'match_lumi', output: MatchedFiles, unwrap: true}
         PU_dist_mc: {stages: 'create_PU_dist', output: PU_dist_mc}
@@ -72,10 +72,7 @@ stages:
         release: 'CMSSW_10_6_12'
         scram_arch: 'slc7_amd64_gcc700'
         output_path: '{workdir}'
-        output_file: '{workdir}/output_ak4pfchs.root'
-      scatter:
-        method: zip
-        parameters: [input_file]
+        output_file: '{workdir}/Output_files.yml'
       step: {$ref: steps.yaml#/match_jets}
 
   - name: compute_l1
@@ -83,7 +80,7 @@ stages:
     scheduler:
       scheduler_type: singlestep-stage
       parameters:
-        input_file: {stages: 'match_jets', output: matched_file}
+        input_file: {stages: 'match_jets', output: Output_files, unwrap: true}
         algo: 'AK'
         cone_size: '4'
         jet_type: 'PFchs'

@@ -201,92 +201,61 @@ match_jets:
       cp -r $HOME/JetMETAnalysis .
       scram b
 
-      read -r NoPUFile PUFile <<<$(echo {input_file})
-
-      NoPUFile=$(echo $NoPUFile | tr ':' ' ')
-      PUFile=$(echo $PUFile | tr ':' ' ')
-
-      nopu_files="$NoPUFile"
-
-      for file in $NoPUFile; do
-        n=0
-        until [ "$n" -ge 5 ]; do
-          ls $file
-          root -q -b $file
-          if [ $? -eq 255 ]; then
-            break
-          fi
-          n=$(($n+1)) 
-          sleep 10
-        done
-
-        if [ "$n" == 5 ]; then
-          echo "!!!!!!! $file corrupted! Removing it from the list. !!!!!!!"
-          echo -n "$nopu_files ==> "
-          nopu_files=$(echo $nopu_files | sed s@"$file"@@)
-          echo $nopu_files
-        fi
-      done
-
-      pu_files="$PUFile"
-
-      for file in $PUFile; do
-        n=0
-        until [ "$n" -ge 5 ]; do
-          ls $file
-          root -q -b $file
-          if [ $? -eq 255 ]; then
-            break
-          fi
-          n=$(($n+1)) 
-          sleep 10
-        done
-
-        if [ "$n" == 5 ]; then
-          echo "!!!!!!! $file corrupted! Removing it from the list. !!!!!!!"
-          echo -n "$pu_files ==> "
-          pu_files=$(echo $pu_files | sed s@"$file"@@)
-          echo $pu_files
-        fi
-      done
-
-      hadd -f -k -n 5 {output_path}/NoPUFile.root $nopu_files
-      hadd -f -k -n 5 {output_path}/PUFile.root $pu_files
-
-      echo "Files in directory!"
-      ls -l
-
       algorithm=$(echo {algo}{cone_size}{jet_type} | tr '[:upper:]' '[:lower:]')
+      output=output_$(echo {algo}{cone_size}{jet_type} | tr '[:upper:]' '[:lower:]').root
 
-      jet_synchtest_x \
-        -basepath '//' \
-        -samplePU {output_path}/PUFile.root \
-        -sampleNoPU {output_path}/NoPUFile.root \
-        -algo1 $algorithm \
-        -algo2 $algorithm \
-        -iftest false \
-        -maxEvts 10000000 \
-        -ApplyJEC false \
-        -outputPath {output_path} \
-        -npvRhoNpuBinWidth 10 \
-        -NBinsNpvRhoNpu 6 \
-        -MCPUReWeighting {PU_dist_mc} \
-        -DataPUReWeighting `pwd`/MyDataPileupHistogram.root \
-        -useweight true \
-        -nrefmax 3 \
-        -doNotSave false
+      j=0
 
-      rm {output_path}/NoPUFile.root
-      rm {output_path}/PUFile.root
+      for i in {input_file}; do
+        read -r NoPUFile PUFile <<<$(echo $i)
+
+        echo "No PU files: $NoPUFile"
+        echo "PU files: $PUFile"
+
+        NoPUFile=$(echo $NoPUFile | tr ':' ' ')
+        PUFile=$(echo $PUFile | tr ':' ' ')
+
+        hadd -f -k -n 5 {output_path}/NoPUFile.root $NoPUFile
+        hadd -f -k -n 5 {output_path}/PUFile.root $PUFile
+
+        jet_synchtest_x \
+          -basepath '//' \
+          -samplePU {output_path}/PUFile.root \
+          -sampleNoPU {output_path}/NoPUFile.root \
+          -algo1 $algorithm \
+          -algo2 $algorithm \
+          -iftest false \
+          -maxEvts 10000000 \
+          -ApplyJEC false \
+          -outputPath $PWD \
+          -npvRhoNpuBinWidth 10 \
+          -NBinsNpvRhoNpu 6 \
+          -MCPUReWeighting {PU_dist_mc} \
+          -DataPUReWeighting `pwd`/MyDataPileupHistogram.root \
+          -useweight true \
+          -nrefmax 3 \
+          -doNotSave true
+
+        rm {output_path}/NoPUFile.root
+        rm {output_path}/PUFile.root
+
+        output_workspace=output_$(echo {algo}{cone_size}{jet_type} | tr '[:upper:]' '[:lower:]')_$(($j+0)).root
+        cp $output {output_path}/$output_workspace
+
+        j=$(($j+1))
+      done
+
+      echo "Output_files:" > {output_file}
+      for i in $(ls $REANA_WORKSPACE/output_*); do
+        echo "  - \"\$REANA_WORKSPACE/\$i\"" >> {output_file}
+      done
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
     imagetag: box-slc6-v4
   publisher:
-    publisher_type: interpolated-pub
-    publish:
-      matched_file: '{output_file}'
-      PU_dist_mc: '{PU_dist_mc}'
+    publisher_type: fromyaml-pub
+    yamlfile: 'Output_files.yml'
 
 compute_l1:
   process:
@@ -310,7 +279,7 @@ compute_l1:
 
       jet_synchfit_x \
         -inputDir {output_path} \
-        -outputDir $PWD \
+        -outputDir {output_path} \
         -algo1 $algorithm \
         -algo2 $algorithm \
         -highPU false \
@@ -320,8 +289,7 @@ compute_l1:
 
       root -b -q -l `printf "deriveL1.C+(\"{output_path}\",\"$algorithm\",\"{algo}{cone_size}{jet_type}\",\"{era}\")"`
       mv *.txt {output_path}
-      mv *.root {output_path}
-      mv *.pdf {output_path}
+      rm {output_path}/*.root
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
@@ -497,6 +465,8 @@ closure:
         -MCPUReWeighting {PU_dist_mc} \
         -DataPUReWeighting MyDataPileupHistogram.root \
         -nrefmax 3
+
+      rm {input_file}
   environment:
     environment_type: docker-encapsulated
     image: alintulu/jec
